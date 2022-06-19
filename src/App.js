@@ -15,6 +15,7 @@ import { context } from "./context/context";
 import Home from "./pages/Home";
 import SearchResults from "./components/SearchResults/SearchResults";
 import Album from "./components/Album/Album";
+import Callback from "./components/callback";
 
 export default function App() {
   const { tokenIsSet } = useContext(context);
@@ -46,6 +47,9 @@ export default function App() {
           <Container>
             <SearchResults />
           </Container>
+        </Route>
+        <Route path={"/callback"}>
+          <Callback />
         </Route>
         <Route path={"/"}>
           <div className="App">{tokenIsSet ? <Home /> : <Login />}</div>

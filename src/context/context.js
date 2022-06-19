@@ -69,11 +69,28 @@ const State = (props) => {
     setTokenIsSet(false);
   };
 
+  const setUrl = async () => {
+    const accessUrl = `http://localhost:8000/login`;
+    
+    window.location = accessUrl;
+  
+    // let data = await fetch('http://localhost:8000/callback', { mode: "cors" });
+    // console.log('data', data);
+  }
+
+  const getToken = async (code) => {
+    
+    await fetch(`http://localhost:8000/callback/${code}`, { mode: "cors" });
+    // console.log('data', data);
+  }
+
   const getPlaylists = async () => {
 
     try {
-      let data = await spotifyApi.getUserPlaylists();
-
+      let data = await fetch(`http://localhost:8000/playlists`, { mode: "cors" });
+      // let data = await spotifyApi.getUserPlaylists();
+      console.log('data', data);
+      
       if (data) {
         if (data.items.length !== 0) {
           dispatch({
@@ -346,6 +363,8 @@ const State = (props) => {
         getArtistAlbums,
         getArtistRelatedArtists,
         refreshPage,
+        setUrl,
+        getToken
       }}
     >
       {props.children}

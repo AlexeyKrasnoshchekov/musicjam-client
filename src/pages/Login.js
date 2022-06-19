@@ -1,13 +1,13 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { context } from "../context/context";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { getAccessToken, setUrl } from "../util/helpers";
 import { Button, Col, Row, Divider, Image } from "antd";
 
 export default function Login() {
-  const { setToken, setTokenIsSet, token } = useContext(context);
+  const { setToken, setUrl, tokenIsSet, setTokenIsSet, token } = useContext(context);
   const [authUrlIsSet, setAuthUrlIsSet] = useState(false);
-
+  const history = useHistory();
   const initialRender = useRef(true);
   const location = useLocation();
 
@@ -17,19 +17,21 @@ export default function Login() {
       return;
     }
 
-    if (location.hash) {
-      const tokenLocal = getAccessToken();
-      console.log('first',tokenLocal);
-      setToken(tokenLocal);
-      localStorage.setItem("token", tokenLocal);
-      setTokenIsSet(true);
-    }
-  }, [authUrlIsSet]);
+    // if (location.hash) {
+    //   const tokenLocal = getAccessToken();
+    //   console.log('first',tokenLocal);
+    //   setToken(tokenLocal);
+    //   localStorage.setItem("token", tokenLocal);
+    //   setTokenIsSet(true);
+    // }
+  }, [tokenIsSet]);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (token === "") {
-      setUrl();
-      setAuthUrlIsSet(true);
+      // setUrl();
+      // console.log('first',location);
+      await setUrl();
+      
     } else {
       setTokenIsSet(true);
     }
