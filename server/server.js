@@ -50,21 +50,17 @@ const scopes = [
   });
 
   app.get('/playlists', cors(corsOptions), async (req, res) => {
-    console.log('access_token2', access_token);
-    spotifyApi.setAccessToken(access_token);
     const playlists = await spotifyApi.getUserPlaylists();
-    console.log('playlists', playlists)
     // const json = await playlists.json();
-    // if (json) {
-    //     res.json(json);
-    //   } else {
-    //     res.status(404).send();
-    // }
-    // // console.log('url', url);
-    // res.json(url);
+    console.log('playlists', playlists);
+  if (playlists) {
+      res.json(playlists.body.items);
+    } else {
+      res.status(404).send();
+  }
   });
   
-  app.get('/callback', cors(corsOptions), (req, res) => {
+  app.get('/callback', cors(corsOptions), async (req, res) => {
     const error = req.query.error;
     const code = req.query.code;
     // const state = req.query.state;
@@ -77,7 +73,7 @@ const scopes = [
       return;
     }
   
-    spotifyApi
+    await spotifyApi
       .authorizationCodeGrant(code)
       .then(data => {
         access_token = data.body['access_token'];
@@ -86,6 +82,8 @@ const scopes = [
   
         spotifyApi.setAccessToken(access_token);
         spotifyApi.setRefreshToken(refresh_token);
+
+        
   
         console.log('access_token:', access_token);
         console.log('refresh_token:', refresh_token);
@@ -103,11 +101,15 @@ const scopes = [
           console.log('access_token:', access_token);
           spotifyApi.setAccessToken(access_token);
         }, expires_in / 2 * 1000);
+
       })
       .catch(error => {
         console.error('Error getting Tokens:', error);
         res.send(`Error getting Tokens: ${error}`);
       });
+
+      
+      
   });
   
   app.listen(port, () =>
