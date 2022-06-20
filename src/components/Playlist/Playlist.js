@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { context } from "../../context/context";
 import { Col, Image, Row, Table, Typography } from "antd";
 import { DeleteOutlined, HeartOutlined } from "@ant-design/icons";
+import { useGetPlaylistQuery } from "../../redux/playlistsQuery";
 
 export default function Playlist() {
   const [imageIndex, setImageIndex] = useState(0);
@@ -10,18 +11,24 @@ export default function Playlist() {
   const { Title } = Typography;
   const {id} = useParams();
 
+  const {data: playlist1, isLoading: isLoadingPlaylist} = useGetPlaylistQuery(id);
+  console.log('playlist1', playlist1);
+  
+
+  
+
   const { token,
     refreshPage, playlist, playlistItems, clearPlaylistItems, getPlaylist, removeFromPlaylist,addToMySavedTracks, clearSavedTracks, getMySavedTracks, mySavedTracks } =
     useContext(context);
   const initialRender = useRef(true);
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    handleGetPlaylist(id);
-  }, [id]);
+  // useEffect(() => {
+  //   if (initialRender.current) {
+  //     initialRender.current = false;
+  //     return;
+  //   }
+  //   handleGetPlaylist(id);
+  // }, [id]);
 
   useEffect(() => {
     if (initialRender.current) {
@@ -33,16 +40,16 @@ export default function Playlist() {
   }, [token]);
 
   useEffect(() => {
-    playlistItems.length !==0 && setData([]);
+    playlist1 && playlist1.tracks.items.length !==0 && setData([]);
     formatData();
-  }, [playlistItems]);
+  }, [playlist1]);
 
-  const handleGetPlaylist = async (id) => {
-    console.log('id11122', id);
-    await clearPlaylistItems();
-    await getPlaylist(id);
+  // const handleGetPlaylist = async (id) => {
+  //   // console.log('id11122', id);
+  //   // await clearPlaylistItems();
+  //   // await getPlaylist(id);
     
-  };
+  // };
 
   const columns = [
     {
@@ -126,8 +133,7 @@ export default function Playlist() {
   };
 
   const formatData = () => {
-    playlistItems &&
-    playlistItems.forEach((item) => {
+    playlist1 && playlist1.tracks.items.forEach((item) => {
         console.log('item', item);
 
         createDataObj(
@@ -177,12 +183,12 @@ export default function Playlist() {
   
   return (
     <>
-      {playlist && <Row>
+      {playlist1 && <Row>
         <Col span={8}>
-          <Image width={200} src={playlist.images[imageIndex].url} />
+          <Image width={200} src={playlist1.images[imageIndex].url} />
         </Col>
         <Col span={16}>
-          <Title level={2}>{playlist.name}</Title>
+          <Title level={2}>{playlist1.name}</Title>
         </Col>
       </Row>}
 

@@ -31,8 +31,6 @@ const State = (props) => {
     token: "",
     tokenIsSet: false,
     urlIsSet: false,
-    playlists: [],
-    mySavedAlbums: [],
     mySavedTracks: [],
     playlistItems: [],
     artistAlbums: [],
@@ -84,38 +82,7 @@ const State = (props) => {
     // console.log('data', data);
   }
 
-  const getPlaylists = async () => {
-
-    try {
-      let data = await fetch(`http://localhost:8000/playlists`, { mode: "cors" });
-      // let data = await spotifyApi.getUserPlaylists();
-      console.log('data', data);
-      
-      if (data) {
-        if (data.items.length !== 0) {
-          dispatch({
-            type: SET_USER,
-            payload: data.items[0].owner.display_name,
-          });
-
-          let playlistsWithSongs = data.items.filter(
-            (playlist) => playlist.tracks.total !== 0
-          );
-
-          if (playlistsWithSongs.length !== 0) {
-            playlistsWithSongs.forEach((item) => {
-              dispatch({
-                type: SET_PLAYLISTS,
-                payload: item,
-              });
-            });
-          }
-        }
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+ 
   const getPlaylist = async (playlistId) => {
     try {
       let data = await spotifyApi.getPlaylist(playlistId);
@@ -225,23 +192,7 @@ const State = (props) => {
       console.log(error);
     }
   };
-  const getMySavedAlbums = async () => {
-    try {
-      let data = await spotifyApi.getMySavedAlbums();
-      if (data) {
-        if (data.items.length !== 0) {
-          data.items.forEach((item) => {
-            dispatch({
-              type: SET_MY_ALBUMS,
-              payload: item,
-            });
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
   const addToMySavedTracks = async (trackId) => {
     try {
       await spotifyApi.addToMySavedTracks([trackId]);
@@ -327,13 +278,11 @@ const State = (props) => {
       value={{
         token: state.token,
         tokenIsSet: state.tokenIsSet,
-        playlists: state.playlists,
         playlist: state.playlist,
         album: state.album,
         artist: state.artist,
         user: state.user,
         searchResult: state.searchResult,
-        mySavedAlbums: state.mySavedAlbums,
         mySavedTracks: state.mySavedTracks,
         playlistItems: state.playlistItems,
         artistAlbums: state.artistAlbums,
@@ -341,7 +290,6 @@ const State = (props) => {
         setToken,
         auth,
         logout,
-        getPlaylists,
         getAlbum,
         getPlaylist,
         setTokenIsSet,
@@ -350,7 +298,6 @@ const State = (props) => {
         removeFromPlaylist,
         createPlaylist,
         addToMySavedAlbums,
-        getMySavedAlbums,
         addToMySavedTracks,
         removeFromMySavedTracks,
         getMySavedTracks,

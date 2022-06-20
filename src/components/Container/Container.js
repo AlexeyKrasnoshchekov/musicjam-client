@@ -15,30 +15,31 @@ import {
 import { context } from "../../context/context";
 import { useHistory } from "react-router-dom";
 import SubMenu from "antd/lib/menu/SubMenu";
+import { useGetAlbumsQuery } from "../../redux/albumsQuery";
 const { Header, Content, Sider } = Layout;
 
 const Container = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const [notEmptyPlaylists, setNotEmptyPlaylists] = useState([]);
+  const [mySavedAlbums1, setMySavedAlbums1] = useState([]);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const location = useLocation();
-  const {data: playlists1, isLoading} = useGetPlaylistsQuery();
+  const {data: playlists1, isLoading: isLoadingPlaylists} = useGetPlaylistsQuery();
+  const {data: myAlbums, isLoading: isLoadingAlbums} = useGetAlbumsQuery();
   // const playlistsData = useGetPlaylistsQuery();
   // const playlists1 = playlistsData.data;
   console.log('ffgg', playlists1);
+  console.log('myAlbums', isLoadingAlbums);
 
   const {
-    playlists,
     createPlaylist,
     getPlaylists,
-    mySavedAlbums,
-    getMySavedAlbums,
     clearPlaylists,
   } = useContext(context);
 
   const [playlistName, setPlaylistName] = useState("");
 
-  const initialRender = useRef(true);
   const history = useHistory();
 
   const { path } = useRouteMatch();
@@ -63,13 +64,7 @@ const Container = (props) => {
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    mySavedAlbums.length === 0 && getMySavedAlbums();
-  }, []);
+
 
   useEffect(() => {
     if (playlists1) {
@@ -84,6 +79,16 @@ const Container = (props) => {
       }
     }
   }, [playlists1]);
+
+  useEffect(() => {
+    if (myAlbums) {
+      if (myAlbums.length !== 0) {
+        myAlbums.forEach((item) => {
+          setMySavedAlbums1(state => [...state, item])
+        });
+      }
+    }
+  }, [myAlbums]);
 
   return (
     <Layout
@@ -143,8 +148,8 @@ const Container = (props) => {
             title="Saved Albums"
             icon={<PlaySquareOutlined />}
           >
-            {mySavedAlbums.map((item, index) => {
-              const subKey = 1 + playlists.length + index + 1;
+            {mySavedAlbums1.map((item, index) => {
+              const subKey = 1 + notEmptyPlaylists.length + index + 1;
               return (
                 <Menu.Item key={subKey}>
                   <Link to={`/album/${item.album.id}`}>
@@ -155,7 +160,7 @@ const Container = (props) => {
             })}
           </SubMenu>
           <Menu.Item
-            key={1 + playlists.length + mySavedAlbums.length + 1}
+            key={1 + notEmptyPlaylists.length + mySavedAlbums1.length + 1}
             icon={<HeartOutlined />}
             onClick={() => {
               history.push(`/savedtracks`);

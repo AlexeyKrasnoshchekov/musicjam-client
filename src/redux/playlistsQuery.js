@@ -6,8 +6,11 @@ export const playlistsApi = createApi({
     endpoints: (build) => ({
         getPlaylists: build.query({
             query: () => 'playlists'
+        }),
+        getPlaylist: build.query({
+            query: (playlistId) => `playlist/${playlistId}`
         })
     })
 });
 
-export const {useGetPlaylistsQuery} = playlistsApi;
+export const {useGetPlaylistsQuery, useGetPlaylistQuery} = playlistsApi;
