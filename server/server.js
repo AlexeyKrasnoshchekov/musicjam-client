@@ -110,7 +110,7 @@ app.get("/playlist/:id", cors(corsOptions), async (req, res) => {
   const playlist_id = req.params.id;
   const playlist = await spotifyApi.getPlaylist(playlist_id);
   // const json = await playlists.json();
-  console.log('playlist', playlist);
+  
   if (playlist) {
     res.json(playlist.body);
   } else {
@@ -125,6 +125,45 @@ app.get("/getMySavedAlbums", cors(corsOptions), async (req, res) => {
   // console.log("albums", albums);
   if (albums) {
     res.json(albums.body.items);
+  } else {
+    res.status(404).send();
+  }
+});
+app.get("/getMySavedAlbums/:id", cors(corsOptions), async (req, res) => {
+  const album_id = req.params.id;
+  const album = await spotifyApi.getAlbum(album_id);
+  // const json = await playlists.json();
+  // console.log("album", album);
+  if (album) {
+    res.json(album.body);
+  } else {
+    res.status(404).send();
+  }
+});
+
+//SAVED_TRACKS
+app.get("/savedTracks", cors(corsOptions), async (req, res) => {
+  const savedTracks = await spotifyApi.getMySavedTracks();
+  // const json = await playlists.json();
+  // console.log("savedTracks", savedTracks);
+  if (savedTracks) {
+    res.json(savedTracks.body.items);
+  } else {
+    res.status(404).send();
+  }
+});
+
+//SEARCH
+app.get("/search/:term", cors(corsOptions), async (req, res) => {
+  const search_term = req.params.term;
+  const types = ["artist", "album", "track"];
+
+  console.log("search_term", search_term);
+  const searchResult = await spotifyApi.search(search_term, types, { limit: 5 });
+  // const json = await playlists.json();
+  // console.log("searchResult", searchResult);
+  if (searchResult) {
+    res.json(searchResult.body);
   } else {
     res.status(404).send();
   }

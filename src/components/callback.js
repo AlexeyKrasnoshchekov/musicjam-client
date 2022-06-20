@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef } from 'react'
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { context } from '../context/context';
 
 export default function Callback() {

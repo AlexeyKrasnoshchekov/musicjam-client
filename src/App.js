@@ -43,7 +43,7 @@ export default function App() {
             <SavedTracks />
           </Container>
         </Route>
-        <Route path={"/search"}>
+        <Route path={"/search/:term"}>
           <Container>
             <SearchResults />
           </Container>

@@ -6,8 +6,11 @@ export const albumsApi = createApi({
     endpoints: (build) => ({
         getAlbums: build.query({
             query: () => 'getMySavedAlbums'
+        }),
+        getAlbum: build.query({
+            query: (albumId) => `getMySavedAlbums/${albumId}`
         })
     })
 });
 
-export const {useGetAlbumsQuery} = albumsApi;
+export const {useGetAlbumsQuery, useGetAlbumQuery} = albumsApi;

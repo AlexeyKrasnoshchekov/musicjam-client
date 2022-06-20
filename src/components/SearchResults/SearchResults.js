@@ -1,7 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { context } from "../../context/context";
 import "./SearchResults.css";
+import { useGetSearchQuery } from "../../redux/searchQuery";
 import {
   Button,
   Card,
@@ -13,6 +14,8 @@ import {
   notification,
 } from "antd";
 import { HeartOutlined, PlusSquareOutlined } from "@ant-design/icons";
+import { useGetAlbumsQuery } from "../../redux/albumsQuery";
+import { useGetPlaylistsQuery } from "../../redux/playlistsQuery";
 
 export default function SearchResults() {
   const { Title } = Typography;
@@ -26,34 +29,41 @@ export default function SearchResults() {
     playlists,
     mySavedAlbums,
     mySavedTracks,
-    getMySavedTracks,
+    // getMySavedTracks,
     clearSavedTracks,
     addToPlaylist,
     addToMySavedTracks,
   } = useContext(context);
 
   const history = useHistory();
-  const initialRender = useRef(true);
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    getMySavedTracks();
-  }, []);
+  const { term } = useParams();
+console.log('term', term)
+  const {data: searchResult1, isLoading: isLoadingSeacrhResult} = useGetSearchQuery(term);
+  const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
+  const { data: playlists1, isLoading: isLoadingPlaylists } =
+    useGetPlaylistsQuery();
+  // console.log('searchResult1', searchResult1);
+
+  // useEffect(() => {
+  //   if (initialRender.current) {
+  //     initialRender.current = false;
+  //     return;
+  //   }
+  //   getMySavedTracks();
+  // }, []);
 
   useEffect(() => {
-    searchResult &&
-      searchResult.tracks &&
-      searchResult.tracks.items.length !== 0 &&
+    searchResult1 &&
+      searchResult1.tracks &&
+      searchResult1.tracks.items.length !== 0 &&
       setData([]);
-    searchResult &&
-      searchResult.tracks &&
-      searchResult.tracks.items.length !== 0 &&
+    searchResult1 &&
+      searchResult1.tracks &&
+      searchResult1.tracks.items.length !== 0 &&
       formatData();
-  }, [searchResult]);
+  }, [searchResult1]);
 
   const handleGetAlbum = async (id) => {
     await getAlbum(id);
@@ -85,7 +95,7 @@ export default function SearchResults() {
       onCell: (record, rowIndex) => {
         return {
           onClick: () => {
-            let elem = searchResult.tracks.items.filter(
+            let elem = searchResult1.tracks.items.filter(
               (item, i) => rowIndex === i
             )[0];
             handleGetAlbum(elem.album.id);
@@ -119,14 +129,14 @@ export default function SearchResults() {
         return ((!elem.isSaved && mySavedTracks.filter(item => item.track.id === elem.id).length === 0) ? <HeartOutlined /> : <></>);
         // mySavedTracks.filter(item => item.track.id === elem.id).length === 0 ? <span></span> : <HeartOutlined />;
       },
-      onCell: (record, rowIndex) => {
-        return {
-          onClick: () => {
-            let elem = data.filter((item, i) => rowIndex === i)[0];
-            handleAddTrack(elem.id);
-          },
-        };
-      },
+      // onCell: (record, rowIndex) => {
+      //   return {
+      //     onClick: () => {
+      //       let elem = data.filter((item, i) => rowIndex === i)[0];
+      //       handleAddTrack(elem.id);
+      //     },
+      //   };
+      // },
     },
     {
       title: "Add to playlist",
@@ -136,7 +146,7 @@ export default function SearchResults() {
         <Dropdown
           overlay={
             <Menu>
-              {playlists.map((playlist, index) => {
+              {playlists1.map((playlist, index) => {
                 return (
                   <Menu.Item
                     key={index}
@@ -166,8 +176,8 @@ export default function SearchResults() {
 
   const formatData = () => {
     let trackIsSaved = false;
-    searchResult.tracks.items.length !== 0 &&
-      searchResult.tracks.items.forEach((item) => {
+    searchResult1.tracks.items.length !== 0 &&
+      searchResult1.tracks.items.forEach((item) => {
         
         trackIsSaved = mySavedTracks.some((elem) => elem.track.name === item.name);
 
@@ -224,12 +234,12 @@ export default function SearchResults() {
     setData((data) => [...data, obj]);
   };
 
-  const handleAddTrack = async (trackId) => {
-    await addToMySavedTracks(trackId);
-    await clearSavedTracks();
-    await getMySavedTracks();
-    formatData();
-  };
+  // const handleAddTrack = async (trackId) => {
+  //   await addToMySavedTracks(trackId);
+  //   await clearSavedTracks();
+  //   await getMySavedTracks();
+  //   formatData();
+  // };
 
   const handleAddToPlaylist = async (playlistId, trackUri) => {
     let status = await addToPlaylist(playlistId, trackUri);
@@ -248,16 +258,16 @@ export default function SearchResults() {
 
   return (
     <div>
-      {searchResult && (
+      {searchResult1 && (
         <div>
-          {searchResult.albums && (
+          {searchResult1.albums && (
             <div>
               <Title level={4}>Albums</Title>
               {/* <Row>
                 <Col span={24}> */}
               <div className="albums-grid">
-                {searchResult.albums.items.length !== 0 &&
-                  searchResult.albums.items.map((album, index) => {
+                {searchResult1.albums.items.length !== 0 &&
+                  searchResult1.albums.items.map((album, index) => {
                     return (
                       <Card
                         hoverable
@@ -282,7 +292,7 @@ export default function SearchResults() {
                         <p>{`Artist: ${album.artists[0].name}`}</p>
                         <p>{`Released: ${album.release_date}`}</p>
                         <p>{`Total tracks: ${album.total_tracks}`}</p>
-                        {mySavedAlbums.filter(
+                        {myAlbums.filter(
                           (savedAlbum) => savedAlbum.album.id === album.id
                         ).length === 0 && (
                           <Button
@@ -301,12 +311,12 @@ export default function SearchResults() {
               </Row> */}
             </div>
           )}
-          {searchResult.artists.items.length !== 0 && (
+          {searchResult1.artists.items.length !== 0 && (
             <div>
               <Title level={4}>Artists</Title>
               <div className="artists-grid">
-                {searchResult.artists.items &&
-                  searchResult.artists.items.map((artist, index) => {
+                {searchResult1.artists.items &&
+                  searchResult1.artists.items.map((artist, index) => {
                     return (
                       <Card
                         hoverable

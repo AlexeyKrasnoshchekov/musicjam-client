@@ -221,23 +221,6 @@ const State = (props) => {
       console.log(error);
     }
   };
-  const getMySavedTracks = async () => {
-    try {
-      let data = await spotifyApi.getMySavedTracks();
-      if (data) {
-        if (data.items.length !== 0) {
-          data.items.forEach((item) => {
-            dispatch({
-              type: SET_MY_TRACKS,
-              payload: item,
-            });
-          });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const createPlaylist = async (playlistName) => {
     const data = await spotifyApi.getMe();
@@ -300,7 +283,6 @@ const State = (props) => {
         addToMySavedAlbums,
         addToMySavedTracks,
         removeFromMySavedTracks,
-        getMySavedTracks,
         clearSavedTracks,
         clearSavedAlbums,
         removeFromMySavedAlbums,

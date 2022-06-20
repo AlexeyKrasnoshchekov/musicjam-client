@@ -3,20 +3,16 @@ import { context } from "../../context/context";
 import { Table } from "antd";
 import { Link } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
+import { useGetSavedTracksQuery } from "../../redux/savedTracksQuery";
 
 export default function SavedAlbums() {
   const { getMySavedTracks, mySavedTracks, removeFromMySavedTracks, token, refreshPage } = useContext(context);
-  const [data, setData] = useState([]);
+  const [dataTable, setData] = useState([]);
   const initialRender = useRef(true);
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    mySavedTracks.length === 0 && getMySavedTracks();
-  }, []);
-
+  const {data, isLoading: isLoadingSavedTracks} = useGetSavedTracksQuery();
+  
+  console.log('savedTracks', data);
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
@@ -27,9 +23,9 @@ export default function SavedAlbums() {
   }, [token]);
 
   useEffect(() => {
-    mySavedTracks.length !==0 && setData([]);
+    data && data.length !==0 && setData([]);
     formatData();
-  }, [mySavedTracks]);
+  }, [data]);
 
 
   const columns = [
@@ -43,7 +39,7 @@ export default function SavedAlbums() {
       key: "artist",
       dataIndex: "artist",
       render: (text, record, rowIndex) => {
-        let elem = mySavedTracks.filter((item, i) => rowIndex === i)[0];
+        let elem = data.filter((item, i) => rowIndex === i)[0];
         elem && <Link to={`/artist/${elem.track.artists[0].id}`}>{elem.track.artists[0].name}</Link>
       },
     },
@@ -57,7 +53,7 @@ export default function SavedAlbums() {
       dataIndex: "album",
       key: "album",
       render: (text, record, rowIndex) => {
-        let elem = mySavedTracks.filter((item, i) => rowIndex === i)[0];
+        let elem = data.filter((item, i) => rowIndex === i)[0];
         elem && <Link to={`/album/${elem.track.album.id}`}>{elem.track.album.name}</Link>
       },
     },
@@ -76,18 +72,18 @@ export default function SavedAlbums() {
       title: "Del",
       key: "del",
       render: () => <DeleteOutlined />,
-      onCell: (record, rowIndex) => {
-        return {
-          onClick: (event) => {handleSavedTrackDelete(rowIndex)}, // click row
+      // onCell: (record, rowIndex) => {
+      //   return {
+      //     onClick: (event) => {handleSavedTrackDelete(rowIndex)}, // click row
 
-        };
-      }
+      //   };
+      // }
     },
   ];
 
   const formatData = () => {
-    mySavedTracks.length !== 0 &&
-      mySavedTracks.forEach((item) => {
+    data && data.length !== 0 &&
+      data.forEach((item) => {
         createDataObj(
           item.added_at.split("T")[0],
           item.track.name,
@@ -121,18 +117,18 @@ export default function SavedAlbums() {
     setData((data) => [...data, obj]);
   };
 
-  const handleSavedTrackDelete = async (rowIndex) => {
-    await removeFromMySavedTracks(rowIndex);
-    mySavedTracks.length !==0 && setData([]);
-    formatData();
-  }
+  // const handleSavedTrackDelete = async (rowIndex) => {
+  //   await removeFromMySavedTracks(rowIndex);
+  //   mySavedTracks.length !==0 && setData([]);
+  //   formatData();
+  // }
 
   return (
     <>
-      {data && (
+      {dataTable && (
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={dataTable}
         />
       )}
     </>

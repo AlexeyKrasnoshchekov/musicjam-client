@@ -30,14 +30,14 @@ export default function Playlist() {
   //   handleGetPlaylist(id);
   // }, [id]);
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    token === "" && refreshPage();
+  // useEffect(() => {
+  //   if (initialRender.current) {
+  //     initialRender.current = false;
+  //     return;
+  //   }
+  //   token === "" && refreshPage();
     
-  }, [token]);
+  // }, [token]);
 
   useEffect(() => {
     playlist1 && playlist1.tracks.items.length !==0 && setData([]);

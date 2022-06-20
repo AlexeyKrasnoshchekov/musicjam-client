@@ -18,6 +18,8 @@ function MyHeader() {
     // searchResult
   } = useContext(context);
 
+  
+
   // const types = ["artist", "album", "track"];
 
   const handleLogout = async () => {
@@ -38,8 +40,10 @@ function MyHeader() {
   };
 
   const onSelect = (data) => {
-    search(data);
-    history.push("/search");
+    // search(data);
+    console.log('ffggfg', data);
+    const term = data.replace(/ /g, "_")
+    history.push(`/search/${term}`);
   };
 
   return (
