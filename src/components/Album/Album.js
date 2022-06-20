@@ -99,7 +99,7 @@ export default function Album() {
         <Dropdown
           overlay={
             <Menu>
-              {playlists1
+              {playlists1 && playlists1.length !==0 && playlists1
                 .filter((playlist) => playlist.tracks.total !== 0)
                 .map((playlist, index) => {
                   return (
@@ -212,7 +212,7 @@ export default function Album() {
   };
 
   const checkForSavedAlbum = (albumId) => {
-    myAlbums.length !== 0 &&
+    myAlbums && myAlbums.length !== 0 &&
       myAlbums.forEach((savedAlbum) => {
         if (savedAlbum.album.id === albumId) {
           setAlbumIsSaved(true);

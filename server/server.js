@@ -181,18 +181,18 @@ app.get("/artist/:id", cors(corsOptions), async (req, res) => {
 
   let jsonObj = {
     artist : artist.body,
-    artistAlbums : artistAlbums,
-    relatedArtists : relatedArtists
+    artistAlbums : artistAlbums.body.items,
+    relatedArtists : relatedArtists.body.artists
   }
 
   console.log("jsonObj", jsonObj);
   // const json = await playlists.json();
   // console.log("searchResult", searchResult);
-  // if (artist) {
-  //   res.json(jsonObj);
-  // } else {
-  //   res.status(404).send();
-  // }
+  if (jsonObj) {
+    res.json(jsonObj);
+  } else {
+    res.status(404).send();
+  }
 });
 
 app.listen(port, () =>

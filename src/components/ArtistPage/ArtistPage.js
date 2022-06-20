@@ -2,9 +2,8 @@ import { Col, Image, Row, Typography, Card } from "antd";
 
 import "../SearchResults/SearchResults.css";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { context } from "../../context/context";
 import { useGetArtistQuery } from "../../redux/artistQuery";
 
 export default function Album() {
@@ -12,71 +11,38 @@ export default function Album() {
 
   const { Title } = Typography;
 
-  const {
-    token,
-    refreshPage,
-    artist,
-    getArtist,
-    getArtistAlbums,
-    getArtistRelatedArtists,
-    relatedArtists,
-    artistAlbums,
-  } = useContext(context);
 
-  const initialRender = useRef(true);
   const { id } = useParams();
 
-  const {data: artist1, isLoading: isLoadingArtist} = useGetArtistQuery(id);
-  console.log('artist',artist1);
+  const {data: artistObj, isLoading: isLoadingArtist} = useGetArtistQuery(id);
+  console.log('artistObj', artistObj);
 
-  // const handleGetArtist = async (id) => {
-  //   console.log("id11122", id);
-  //   await getArtist(id);
-  //   await getArtistAlbums(id);
-  //   await getArtistRelatedArtists(id);
-  // };
-
-  // useEffect(() => {
-  //   if (initialRender.current) {
-  //     initialRender.current = false;
-  //     return;
-  //   }
-  //   token === "" && refreshPage();
-  // }, [token]);
-
-  // useEffect(() => {
-  //   if (initialRender.current) {
-  //     initialRender.current = false;
-  //     return;
-  //   }
-  //   handleGetArtist(id);
-  // }, [id]);
 
   return (
     <>
-      {artist1 && (
+      {artistObj && artistObj.artist && (
         <Row>
           <Col span={8}>
             <Image
               width={300}
-              src={artist1.images.length !== 0 && artist1.images[imageIndex].url}
+              src={artistObj.artist.images.length !== 0 && artistObj.artist.images[imageIndex].url}
             />
           </Col>
           <Col span={16}>
-            <Title level={2}>{`${artist1.name}`}</Title>
-            <Title level={4}>{`Genres: ${artist1.genres.join("; ")}`}</Title>
-            <Title level={4}>{`Popularity: ${artist1.popularity}`}</Title>
+            <Title level={2}>{`${artistObj.artist.name}`}</Title>
+            <Title level={4}>{`Genres: ${artistObj.artist.genres.join("; ")}`}</Title>
+            <Title level={4}>{`Popularity: ${artistObj.artist.popularity}`}</Title>
           </Col>
         </Row>
       )}
 
-      {/* {artistAlbums.length !== 0 && (
+      {artistObj && artistObj.artistAlbums.length !== 0 && (
         <Row>
           <Col span={24}>
             <Title level={4}>Albums</Title>
             <div className="albums-grid">
-              {artistAlbums.length !== 0 &&
-                artistAlbums.map((album, index) => {
+              {artistObj.artistAlbums.length !== 0 &&
+                artistObj.artistAlbums.map((album, index) => {
                   return (
                     <Card
                       hoverable
@@ -108,11 +74,11 @@ export default function Album() {
           </Col>
         </Row>
       )}
-      {relatedArtists.length !== 0 && (
+      {artistObj && artistObj.relatedArtists.length !== 0 && (
         <div>
           <Title level={4}>Related artists</Title>
           <div className="artists-grid">
-            {relatedArtists.map((artist, index) => {
+            {artistObj.relatedArtists.map((artist, index) => {
               return (
                 <Card
                   hoverable
@@ -142,7 +108,7 @@ export default function Album() {
               );
             })}
           </div>
-        </div> */}
+        </div>
       )}
     </>
   );

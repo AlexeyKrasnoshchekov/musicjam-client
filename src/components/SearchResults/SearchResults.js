@@ -146,7 +146,7 @@ console.log('term', term)
         <Dropdown
           overlay={
             <Menu>
-              {playlists1.map((playlist, index) => {
+              {playlists1 && playlists1.length !==0 && playlists1.map((playlist, index) => {
                 return (
                   <Menu.Item
                     key={index}
@@ -292,7 +292,7 @@ console.log('term', term)
                         <p>{`Artist: ${album.artists[0].name}`}</p>
                         <p>{`Released: ${album.release_date}`}</p>
                         <p>{`Total tracks: ${album.total_tracks}`}</p>
-                        {myAlbums.filter(
+                        {myAlbums && myAlbums.length !==0 && myAlbums.filter(
                           (savedAlbum) => savedAlbum.album.id === album.id
                         ).length === 0 && (
                           <Button
