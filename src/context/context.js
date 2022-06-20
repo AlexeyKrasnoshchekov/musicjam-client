@@ -237,19 +237,7 @@ const State = (props) => {
       console.log(error);
     }
   };
-  const search = async (searchTerm) => {
-    const types = ["artist", "album", "track"];
-    // spotifyApi.setAccessToken(state.token);
-    try {
-      let data = await spotifyApi.search(searchTerm, types, { limit: 5 });
-      dispatch({
-        type: SET_SEARCH_RESULT,
-        payload: data,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
 
   const clearSavedTracks = () => dispatch({ type: CLEAR_SAVED_TRACKS });
   const clearSavedAlbums = () => dispatch({ type: CLEAR_SAVED_ALBUMS });
@@ -276,7 +264,6 @@ const State = (props) => {
         getAlbum,
         getPlaylist,
         setTokenIsSet,
-        search,
         addToPlaylist,
         removeFromPlaylist,
         createPlaylist,

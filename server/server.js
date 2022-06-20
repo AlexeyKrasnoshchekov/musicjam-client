@@ -169,6 +169,32 @@ app.get("/search/:term", cors(corsOptions), async (req, res) => {
   }
 });
 
+//ARTIST
+app.get("/artist/:id", cors(corsOptions), async (req, res) => {
+  const artist_id = req.params.id;
+
+  
+  const artist = await spotifyApi.getArtist(artist_id);
+  let artistAlbums = await spotifyApi.getArtistAlbums(artist_id, { limit: 10 });
+  let relatedArtists = await spotifyApi.getArtistRelatedArtists(artist_id);
+
+
+  let jsonObj = {
+    artist : artist.body,
+    artistAlbums : artistAlbums,
+    relatedArtists : relatedArtists
+  }
+
+  console.log("jsonObj", jsonObj);
+  // const json = await playlists.json();
+  // console.log("searchResult", searchResult);
+  // if (artist) {
+  //   res.json(jsonObj);
+  // } else {
+  //   res.status(404).send();
+  // }
+});
+
 app.listen(port, () =>
   console.log(
     "HTTP Server up. Now go to http://localhost:8888/login in your browser."

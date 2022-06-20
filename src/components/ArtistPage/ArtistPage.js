@@ -5,6 +5,7 @@ import "../SearchResults/SearchResults.css";
 import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { context } from "../../context/context";
+import { useGetArtistQuery } from "../../redux/artistQuery";
 
 export default function Album() {
   const [imageIndex, setImageIndex] = useState(1);
@@ -25,48 +26,51 @@ export default function Album() {
   const initialRender = useRef(true);
   const { id } = useParams();
 
-  const handleGetArtist = async (id) => {
-    console.log("id11122", id);
-    await getArtist(id);
-    await getArtistAlbums(id);
-    await getArtistRelatedArtists(id);
-  };
+  const {data: artist1, isLoading: isLoadingArtist} = useGetArtistQuery(id);
+  console.log('artist',artist1);
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    token === "" && refreshPage();
-  }, [token]);
+  // const handleGetArtist = async (id) => {
+  //   console.log("id11122", id);
+  //   await getArtist(id);
+  //   await getArtistAlbums(id);
+  //   await getArtistRelatedArtists(id);
+  // };
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    handleGetArtist(id);
-  }, [id]);
+  // useEffect(() => {
+  //   if (initialRender.current) {
+  //     initialRender.current = false;
+  //     return;
+  //   }
+  //   token === "" && refreshPage();
+  // }, [token]);
+
+  // useEffect(() => {
+  //   if (initialRender.current) {
+  //     initialRender.current = false;
+  //     return;
+  //   }
+  //   handleGetArtist(id);
+  // }, [id]);
 
   return (
     <>
-      {artist && (
+      {artist1 && (
         <Row>
           <Col span={8}>
             <Image
               width={300}
-              src={artist.images.length !== 0 && artist.images[imageIndex].url}
+              src={artist1.images.length !== 0 && artist1.images[imageIndex].url}
             />
           </Col>
           <Col span={16}>
-            <Title level={2}>{`${artist.name}`}</Title>
-            <Title level={4}>{`Genres: ${artist.genres.join("; ")}`}</Title>
-            <Title level={4}>{`Popularity: ${artist.popularity}`}</Title>
+            <Title level={2}>{`${artist1.name}`}</Title>
+            <Title level={4}>{`Genres: ${artist1.genres.join("; ")}`}</Title>
+            <Title level={4}>{`Popularity: ${artist1.popularity}`}</Title>
           </Col>
         </Row>
       )}
 
-      {artistAlbums.length !== 0 && (
+      {/* {artistAlbums.length !== 0 && (
         <Row>
           <Col span={24}>
             <Title level={4}>Albums</Title>
@@ -138,7 +142,7 @@ export default function Album() {
               );
             })}
           </div>
-        </div>
+        </div> */}
       )}
     </>
   );

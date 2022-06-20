@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { context } from "../../context/context";
 import { Col, Image, Row, Table, Typography } from "antd";
@@ -20,7 +20,6 @@ export default function Playlist() {
   const { token,
     refreshPage, playlist, playlistItems, clearPlaylistItems, getPlaylist, removeFromPlaylist,addToMySavedTracks, clearSavedTracks, getMySavedTracks, mySavedTracks } =
     useContext(context);
-  const initialRender = useRef(true);
 
   // useEffect(() => {
   //   if (initialRender.current) {
