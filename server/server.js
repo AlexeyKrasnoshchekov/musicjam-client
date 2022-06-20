@@ -59,6 +59,16 @@ const scopes = [
       res.status(404).send();
   }
   });
+  app.get('/getMySavedAlbums', cors(corsOptions), async (req, res) => {
+    const albums = await spotifyApi.getMySavedAlbums();
+    // const json = await playlists.json();
+    console.log('playlists', playlists);
+  if (albums) {
+      res.json(albums.body.items);
+    } else {
+      res.status(404).send();
+  }
+  });
   
   app.get('/callback', cors(corsOptions), async (req, res) => {
     const error = req.query.error;

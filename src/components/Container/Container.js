@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import MyHeader from "../Header/Header";
 import { Link, matchPath, useLocation, useRouteMatch } from "react-router-dom";
+import { useGetPlaylistsQuery } from '../../redux/playlistsQuery';
 
 import { Layout, Menu, Modal, Input, Button } from "antd";
 import "./container.css";
@@ -18,8 +19,13 @@ const { Header, Content, Sider } = Layout;
 
 const Container = (props) => {
   const [collapsed, setCollapsed] = useState(false);
+  const [notEmptyPlaylists, setNotEmptyPlaylists] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const location = useLocation();
+  const {data: playlists1, isLoading} = useGetPlaylistsQuery();
+  // const playlistsData = useGetPlaylistsQuery();
+  // const playlists1 = playlistsData.data;
+  console.log('ffgg', playlists1);
 
   const {
     playlists,
@@ -62,9 +68,22 @@ const Container = (props) => {
       initialRender.current = false;
       return;
     }
-    playlists.length === 0 && getPlaylists();
     mySavedAlbums.length === 0 && getMySavedAlbums();
   }, []);
+
+  useEffect(() => {
+    if (playlists1) {
+      let playlistsWithSongs = playlists1.filter(
+        (playlist) => playlist.tracks.total !== 0
+      );
+
+      if (playlistsWithSongs.length !== 0) {
+        playlistsWithSongs.forEach((item) => {
+          setNotEmptyPlaylists(state => [...state, item])
+        });
+      }
+    }
+  }, [playlists1]);
 
   return (
     <Layout
@@ -109,7 +128,7 @@ const Container = (props) => {
                   placeholder="enter playlist name"
                 />
               </Modal>
-              {playlists.map((playlist, index) => {
+              {notEmptyPlaylists.map((playlist, index) => {
                 const subKey = 1 + index + 1;
                 return (
                   <Menu.Item key={subKey}>
