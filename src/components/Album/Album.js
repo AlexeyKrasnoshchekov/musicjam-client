@@ -12,11 +12,11 @@ import {
   notification,
 } from "antd";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { context } from "../../context/context";
-import { useGetAlbumQuery, useGetAlbumsQuery } from "../../redux/albumsQuery";
-import { useGetPlaylistsQuery } from "../../redux/playlistsQuery";
+import { useDeleteAlbumMutation, useGetAlbumQuery, useGetAlbumsQuery, useSaveAlbumMutation } from "../../redux/albumsQuery";
+import { useAddToPlaylistMutation, useGetPlaylistsQuery } from "../../redux/playlistsQuery";
+import { useSaveTrackMutation } from "../../redux/savedTracksQuery";
 import "./album.css";
 
 export default function Album() {
@@ -26,34 +26,37 @@ export default function Album() {
   const [data, setData] = useState([]);
   const { Title } = Typography;
 
-  const {
-    token,
-    refreshPage,
-    album,
-    getAlbum,
-    addToMySavedAlbums,
-    clearSavedAlbums,
-    getMySavedAlbums,
-    removeFromMySavedAlbums,
-    addToPlaylist,
-    playlists,
-    addToMySavedTracks,
-    clearSavedTracks,
-    getMySavedTracks,
-    mySavedAlbums,
-  } = useContext(context);
+  // const {
+  //   token,
+  //   refreshPage,
+  //   album,
+  //   getAlbum,
+
+  //   clearSavedAlbums,
+  //   getMySavedAlbums,
+  //   removeFromMySavedAlbums,
+  //   playlists,
+  //   clearSavedTracks,
+  //   getMySavedTracks,
+  //   mySavedAlbums,
+  // } = useContext(context);
 
   const { id } = useParams();
 
-  const { data: album1, isLoading: isLoadingAlbum } = useGetAlbumQuery(id);
+  const { data: album, isLoading: isLoadingAlbum } = useGetAlbumQuery(id);
   const { data: playlists1, isLoading: isLoadingPlaylists } =
     useGetPlaylistsQuery();
   const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
-  console.log("album1", album1);
+  const [addToPlaylist, {isError:addPlaylistError}] = useAddToPlaylistMutation();
+  const [saveAlbum, {isError:saveAlbumError}] = useSaveAlbumMutation();
+  const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
+  const [deleteAlbum] = useDeleteAlbumMutation();
 
-  const handleGetAlbum = async (id) => {
-    await getAlbum(id);
-  };
+  console.log("album1", album);
+
+  // const handleGetAlbum = async (id) => {
+  //   await getAlbum(id);
+  // };
 
   // useEffect(() => {
   //   if (initialRender.current) {
@@ -72,12 +75,12 @@ export default function Album() {
   // }, [id]);
 
   useEffect(() => {
-    if (album1) {
-      checkForSavedAlbum(album1.id);
-      album1.tracks.items.length !== 0 && setData([]);
+    if (album) {
+      checkForSavedAlbum(album.id);
+      album.tracks.items.length !== 0 && setData([]);
       formatData();
     }
-  }, [album1]);
+  }, [album]);
 
   const columns = [
     {
@@ -144,8 +147,8 @@ export default function Album() {
   ];
 
   const formatData = () => {
-    album1.tracks &&
-      album1.tracks.items.forEach((item) => {
+    album.tracks &&
+      album.tracks.items.forEach((item) => {
         createDataObj(
           item.name,
           item.track_number,
@@ -178,27 +181,27 @@ export default function Album() {
   };
 
   const handleAddToMyAlbums = async () => {
-    await addToMySavedAlbums(album.id);
-    await clearSavedAlbums();
-    await getMySavedAlbums();
+    await saveAlbum({albumId: album.id});
+    // await clearSavedAlbums();
+    // await getMySavedAlbums();
     setAlbumIsSaved((state) => !state);
   };
   const handleDeleteFromMyAlbums = async () => {
-    await removeFromMySavedAlbums(album.id);
-    await clearSavedAlbums();
-    await getMySavedAlbums();
+    await deleteAlbum(album.id);
+    // await clearSavedAlbums();
+    // await getMySavedAlbums();
     setAlbumIsSaved((state) => !state);
   };
   const handleAddTrack = async (trackId) => {
-    await addToMySavedTracks(trackId);
-    await clearSavedTracks();
-    await getMySavedTracks();
+    await saveTrack({trackId});
+    // await clearSavedTracks();
+    // await getMySavedTracks();
   };
 
   const handleAddToPlaylist = async (playlistId, trackUri) => {
-    let status = await addToPlaylist(playlistId, trackUri);
+    await addToPlaylist({playlistId: playlistId, uri: trackUri});
 
-    if (status) {
+    if (!addPlaylistError) {
       notification.open({
         message: "Track was added to playlist",
         duration: 3,
@@ -222,26 +225,27 @@ export default function Album() {
 
   return (
     <>
-      {album1 && (
+      {album && (
         <Row>
           <Col span={8}>
             <Image
               width={300}
-              src={album1.images.length !== 0 && album1.images[imageIndex].url}
+              src={album.images.length !== 0 && album.images[imageIndex].url}
             />
           </Col>
           <Col span={16}>
             <Title
               level={2}
-            >{`${album1.tracks.items[0].artists[0].name} - ${album1.name}`}</Title>
-            <Title level={4}>{`Released: ${album1.release_date}`}</Title>
-            <Title level={4}>{`Popularity: ${album1.popularity}`}</Title>
-            <Title level={4}>{`Total tracks: ${album1.total_tracks}`}</Title>
-            {/* {albumIsSaved ? (
+            >{`${album.tracks.items[0].artists[0].name} - ${album.name}`}</Title>
+            <Title level={4}>{`Released: ${album.release_date}`}</Title>
+            <Title level={4}>{`Popularity: ${album.popularity}`}</Title>
+            <Title level={4}>{`Total tracks: ${album.total_tracks}`}</Title>
+            {albumIsSaved ? (
               <Button onClick={() => handleDeleteFromMyAlbums()}>Unsave</Button>
+              // <Button>Unsave</Button>
             ) : (
               <Button onClick={() => handleAddToMyAlbums()}>Save</Button>
-            )} */}
+            )}
           </Col>
         </Row>
       )}

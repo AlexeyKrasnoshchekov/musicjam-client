@@ -2,6 +2,7 @@ const express = require("express");
 require("dotenv").config();
 var SpotifyWebApi = require("spotify-web-api-node");
 const cors = require("cors");
+const bodyParser = require('body-parser');
 
 var spotifyApi = new SpotifyWebApi({
   clientId: process.env.REACT_APP_SPOTIFY,
@@ -10,6 +11,7 @@ var spotifyApi = new SpotifyWebApi({
 });
 
 const app = express();
+app.use(bodyParser.json());
 const port = process.env.PORT || 8000;
 const ORIGIN = process.env.ORIGIN;
 let access_token;
@@ -118,8 +120,46 @@ app.get("/playlist/:id", cors(corsOptions), async (req, res) => {
   }
 });
 
+app.post("/playlists", cors(corsOptions), async (req, res) => {
+  // var playlistName = req.body.playlistName;
+
+  const user = await spotifyApi.getMe();
+
+  try {
+    let newPlaylist = await spotifyApi.createPlaylist(user.id, {
+      name: req.body.name,
+    });
+
+    // console.log('newPlaylist', newPlaylist);
+
+    newPlaylist && spotifyApi.addTracksToPlaylist(newPlaylist.body.id, [
+      "spotify:track:2bfGNzdiRa1jXZRdfssSzR",
+    ]);
+
+  } catch (error) {
+    console.log(error);
+  }
+  // const json = await playlists.json();
+  // console.log('playlists', playlists);
+  // if (playlists) {
+  //   res.json(playlists.body.items);
+  // } else {
+  //   res.status(404).send();
+  // }
+});
+
+app.delete("/playlists", cors(corsOptions), async (req, res) => {
+  // var playlistName = req.body.playlistName;
+  console.log('req.body.playlistId',req.body.playlistId);
+  try {
+    await spotifyApi.removeTracksFromPlaylist(req.body.playlistId, [req.body.uri]);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 //ALBUMS
-app.get("/getMySavedAlbums", cors(corsOptions), async (req, res) => {
+app.get("/albums", cors(corsOptions), async (req, res) => {
   const albums = await spotifyApi.getMySavedAlbums();
   // const json = await playlists.json();
   // console.log("albums", albums);
@@ -129,7 +169,7 @@ app.get("/getMySavedAlbums", cors(corsOptions), async (req, res) => {
     res.status(404).send();
   }
 });
-app.get("/getMySavedAlbums/:id", cors(corsOptions), async (req, res) => {
+app.get("/album/:id", cors(corsOptions), async (req, res) => {
   const album_id = req.params.id;
   const album = await spotifyApi.getAlbum(album_id);
   // const json = await playlists.json();
@@ -140,14 +180,61 @@ app.get("/getMySavedAlbums/:id", cors(corsOptions), async (req, res) => {
     res.status(404).send();
   }
 });
+app.post("/albums", cors(corsOptions), async (req, res) => {
+  // var playlistName = req.body.playlistName;
+  console.log('req.body.albumId',req.body.albumId);
+  try {
+    await spotifyApi.addToMySavedAlbums([req.body.albumId]);
+  } catch (error) {
+    console.log(error);
+  }
+});
+app.delete("/album/:id", cors(corsOptions), async (req, res) => {
+  const album_id = req.params.id;
+  console.log('album_id',album_id);
+  try {
+    await spotifyApi.removeFromMySavedAlbums([album_id]);
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 //SAVED_TRACKS
-app.get("/savedTracks", cors(corsOptions), async (req, res) => {
+app.get("/track", cors(corsOptions), async (req, res) => {
   const savedTracks = await spotifyApi.getMySavedTracks();
   // const json = await playlists.json();
   // console.log("savedTracks", savedTracks);
   if (savedTracks) {
     res.json(savedTracks.body.items);
+  } else {
+    res.status(404).send();
+  }
+});
+app.post("/track", cors(corsOptions), async (req, res) => {
+  // var playlistName = req.body.playlistName;
+  console.log('req.body.albumId',req.body.trackId);
+  try {
+    await spotifyApi.addToMySavedTracks([req.body.trackId]);
+  } catch (error) {
+    console.log(error);
+  }
+});
+app.delete("/track", cors(corsOptions), async (req, res) => {
+  // var playlistName = req.body.playlistName;
+  console.log('req.body.trackIndex',req.body.trackIndex);
+  try {
+    await spotifyApi.removeFromMySavedTracks([req.body.trackIndex]);
+  } catch (error) {
+    console.log(error);
+  }
+});
+//USER
+app.get("/user", cors(corsOptions), async (req, res) => {
+  const user = await spotifyApi.getMe();
+  // const json = await playlists.json();
+  // console.log("user", savedTracks);
+  if (user) {
+    res.json(user.body);
   } else {
     res.status(404).send();
   }

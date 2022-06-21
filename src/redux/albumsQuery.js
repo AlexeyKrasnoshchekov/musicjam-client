@@ -5,12 +5,26 @@ export const albumsApi = createApi({
     baseQuery: fetchBaseQuery({baseUrl:`http://localhost:8000`}),
     endpoints: (build) => ({
         getAlbums: build.query({
-            query: () => 'getMySavedAlbums'
+            query: () => 'albums'
         }),
         getAlbum: build.query({
-            query: (albumId) => `getMySavedAlbums/${albumId}`
-        })
+            query: (albumId) => `album/${albumId}`
+        }),
+        saveAlbum: build.mutation({
+            query: (body) => ({
+                url: 'albums',
+                method: 'POST',
+                body,
+            })
+        }),
+        deleteAlbum: build.mutation({
+            query: (albumId) => ({
+                url: `album/${albumId}`,
+                method: 'DELETE'
+            })
+            
+        }),
     })
 });
 
-export const {useGetAlbumsQuery, useGetAlbumQuery} = albumsApi;
+export const {useGetAlbumsQuery, useGetAlbumQuery, useSaveAlbumMutation, useDeleteAlbumMutation} = albumsApi;

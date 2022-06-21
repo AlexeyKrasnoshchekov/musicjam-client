@@ -5,6 +5,7 @@ import { albumsApi } from './albumsQuery';
 import { artistApi } from './artistQuery';
 import { savedTracksApi } from './savedTracksQuery';
 import { searchApi } from './searchQuery';
+import { userApi } from './userQuery';
 
 const rootReducer = combineReducers({
   [playlistsApi.reducerPath]: playlistsApi.reducer,
@@ -12,6 +13,7 @@ const rootReducer = combineReducers({
   [savedTracksApi.reducerPath]: savedTracksApi.reducer,
   [searchApi.reducerPath]: searchApi.reducer,
   [artistApi.reducerPath]: artistApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
 })
 
 

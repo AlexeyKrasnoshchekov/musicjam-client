@@ -4,6 +4,7 @@ import { context } from "../../context/context";
 import { useHistory } from "react-router-dom";
 import { AutoComplete, Row, Col, Typography, Space } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
+import { useGetUserQuery } from "../../redux/userQuery";
 
 function MyHeader() {
   const { Title } = Typography;
@@ -19,6 +20,10 @@ function MyHeader() {
   } = useContext(context);
 
   
+
+  const { data: user1, isLoading: isLoadingUser } = useGetUserQuery();
+
+  console.log('user1', user1);
 
   // const types = ["artist", "album", "track"];
 
@@ -79,7 +84,7 @@ function MyHeader() {
                       marginTop: "0.5em",
                     }}
                     level={5}
-                  >{`Logged in as ${user}`}</Title>
+                  >{`Logged in as ${user1 && user1.display_name}`}</Title>
                   <LogoutOutlined
                     style={{
                       color: "white",

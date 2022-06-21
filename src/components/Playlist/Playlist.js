@@ -1,9 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { context } from "../../context/context";
+// import { context } from "../../context/context";
 import { Col, Image, Row, Table, Typography } from "antd";
 import { DeleteOutlined, HeartOutlined } from "@ant-design/icons";
 import { useGetPlaylistQuery } from "../../redux/playlistsQuery";
+import { useGetSavedTracksQuery, useSaveTrackMutation } from "../../redux/savedTracksQuery";
 
 export default function Playlist() {
   const [imageIndex, setImageIndex] = useState(0);
@@ -12,14 +13,17 @@ export default function Playlist() {
   const {id} = useParams();
 
   const {data: playlist1, isLoading: isLoadingPlaylist} = useGetPlaylistQuery(id);
+  const {data: myTracks, isLoading: isLoadingSavedTracks} = useGetSavedTracksQuery();
+  const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
+
   console.log('playlist1', playlist1);
   
 
   
 
-  const { token,
-    refreshPage, playlist, playlistItems, clearPlaylistItems, getPlaylist, removeFromPlaylist,addToMySavedTracks, clearSavedTracks, getMySavedTracks, mySavedTracks } =
-    useContext(context);
+  // const { token,
+  //   refreshPage, playlist, playlistItems, clearPlaylistItems, getPlaylist, removeFromPlaylist, clearSavedTracks, getMySavedTracks, mySavedTracks } =
+  //   useContext(context);
 
   // useEffect(() => {
   //   if (initialRender.current) {
@@ -96,7 +100,7 @@ export default function Playlist() {
       align: "center",
       render: (text, record, rowIndex) => {
         let elem = data.filter((item, i) => rowIndex === i)[0];
-        if (mySavedTracks.filter(item => item.track.id === elem.id).length === 0) {return <HeartOutlined />}
+        if (myTracks && myTracks.filter(item => item.track.id === elem.id).length === 0) {return <HeartOutlined />}
       },
       onCell: (record, rowIndex) => {
         return {
@@ -117,7 +121,7 @@ export default function Playlist() {
           onClick: () => {
             let elem = data.filter((item, i) => rowIndex === i)[0];
             console.log("elem", elem);
-            removeFromPlaylist(playlist.id, elem.uri, elem.id);
+            // removeFromPlaylist(playlist.id, elem.uri, elem.id);
           },
         };
       },
@@ -126,9 +130,9 @@ export default function Playlist() {
 
   const handleAddTrack = async (trackId) => {
     console.log("trackId", trackId);
-    await addToMySavedTracks(trackId);
-    await clearSavedTracks();
-    await getMySavedTracks();
+    await saveTrack({trackId});
+    // await clearSavedTracks();
+    // await getMySavedTracks();
   };
 
   const formatData = () => {

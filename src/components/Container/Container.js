@@ -1,8 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import MyHeader from "../Header/Header";
-import { Link, matchPath, useLocation, useRouteMatch } from "react-router-dom";
-import { useGetPlaylistsQuery } from '../../redux/playlistsQuery';
+import { Link, matchPath, useLocation, useRouteMatch, useHistory } from "react-router-dom";
+import { useCreatePlaylistMutation, useGetPlaylistsQuery } from '../../redux/playlistsQuery';
 
 import { Layout, Menu, Modal, Input, Button } from "antd";
 import "./container.css";
@@ -12,8 +12,6 @@ import {
   HeartOutlined,
 } from "@ant-design/icons";
 
-import { context } from "../../context/context";
-import { useHistory } from "react-router-dom";
 import SubMenu from "antd/lib/menu/SubMenu";
 import { useGetAlbumsQuery } from "../../redux/albumsQuery";
 const { Header, Content, Sider } = Layout;
@@ -27,16 +25,13 @@ const Container = (props) => {
   const location = useLocation();
   const {data: playlists1, isLoading: isLoadingPlaylists} = useGetPlaylistsQuery();
   const {data: myAlbums, isLoading: isLoadingAlbums} = useGetAlbumsQuery();
+  const [createPlaylist, {isError}] = useCreatePlaylistMutation();
+
   // const playlistsData = useGetPlaylistsQuery();
   // const playlists1 = playlistsData.data;
   // console.log('ffgg', playlists1);
   // console.log('myAlbums', isLoadingAlbums);
 
-  const {
-    createPlaylist,
-    getPlaylists,
-    clearPlaylists,
-  } = useContext(context);
 
   const [playlistName, setPlaylistName] = useState("");
 
@@ -54,10 +49,10 @@ const Container = (props) => {
   };
 
   const handleOk = async () => {
-    await createPlaylist(playlistName);
-    await clearPlaylists();
-    await getPlaylists();
     setIsModalVisible(false);
+    await createPlaylist({name: playlistName});
+
+    
   };
 
   const handleCancel = () => {

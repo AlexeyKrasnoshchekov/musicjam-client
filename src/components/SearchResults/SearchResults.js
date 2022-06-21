@@ -14,8 +14,9 @@ import {
   notification,
 } from "antd";
 import { HeartOutlined, PlusSquareOutlined } from "@ant-design/icons";
-import { useGetAlbumsQuery } from "../../redux/albumsQuery";
-import { useGetPlaylistsQuery } from "../../redux/playlistsQuery";
+import { useGetAlbumsQuery, useSaveAlbumMutation } from "../../redux/albumsQuery";
+import { useAddToPlaylistMutation, useGetPlaylistsQuery } from "../../redux/playlistsQuery";
+import { useSaveTrackMutation } from "../../redux/savedTracksQuery";
 
 export default function SearchResults() {
   const { Title } = Typography;
@@ -23,7 +24,6 @@ export default function SearchResults() {
   const {
     searchResult,
     getAlbum,
-    addToMySavedAlbums,
     clearSavedAlbums,
     getMySavedAlbums,
     playlists,
@@ -31,8 +31,6 @@ export default function SearchResults() {
     mySavedTracks,
     // getMySavedTracks,
     clearSavedTracks,
-    addToPlaylist,
-    addToMySavedTracks,
   } = useContext(context);
 
   const history = useHistory();
@@ -44,6 +42,9 @@ console.log('term', term)
   const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
   const { data: playlists1, isLoading: isLoadingPlaylists } =
     useGetPlaylistsQuery();
+    const [addToPlaylist, {isError:addPlaylistError}] = useAddToPlaylistMutation();
+    const [saveAlbum, {isError:saveAlbumError}] = useSaveAlbumMutation();
+    const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
   // console.log('searchResult1', searchResult1);
 
   // useEffect(() => {
@@ -71,9 +72,9 @@ console.log('term', term)
   };
 
   const handleAddToMyAlbums = async (albumId) => {
-    await addToMySavedAlbums(albumId);
-    await clearSavedAlbums();
-    await getMySavedAlbums();
+    await saveAlbum({albumId});
+    // await clearSavedAlbums();
+    // await getMySavedAlbums();
   };
 
   const columns = [
@@ -129,14 +130,14 @@ console.log('term', term)
         return ((!elem.isSaved && mySavedTracks.filter(item => item.track.id === elem.id).length === 0) ? <HeartOutlined /> : <></>);
         // mySavedTracks.filter(item => item.track.id === elem.id).length === 0 ? <span></span> : <HeartOutlined />;
       },
-      // onCell: (record, rowIndex) => {
-      //   return {
-      //     onClick: () => {
-      //       let elem = data.filter((item, i) => rowIndex === i)[0];
-      //       handleAddTrack(elem.id);
-      //     },
-      //   };
-      // },
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: () => {
+            let elem = data.filter((item, i) => rowIndex === i)[0];
+            handleAddTrack(elem.id);
+          },
+        };
+      },
     },
     {
       title: "Add to playlist",
@@ -234,16 +235,17 @@ console.log('term', term)
     setData((data) => [...data, obj]);
   };
 
-  // const handleAddTrack = async (trackId) => {
-  //   await addToMySavedTracks(trackId);
-  //   await clearSavedTracks();
-  //   await getMySavedTracks();
-  //   formatData();
-  // };
+  const handleAddTrack = async (trackId) => {
+    await saveTrack({trackId});
+    // await clearSavedTracks();
+    // await getMySavedTracks();
+    formatData();
+  };
 
   const handleAddToPlaylist = async (playlistId, trackUri) => {
-    let status = await addToPlaylist(playlistId, trackUri);
-    if (status) {
+    await addToPlaylist({playlistId: playlistId, uri: trackUri});
+
+    if (!addPlaylistError) {
       notification.open({
         message: "Track was added to playlist",
         duration: 3,
