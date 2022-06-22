@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -11,14 +10,14 @@ import SavedTracks from "./components/SavedTracks/savedTracks";
 
 import Login from "./pages/Login";
 import Container from "./components/Container/Container";
-import { context } from "./context/context";
 import Home from "./pages/Home";
 import SearchResults from "./components/SearchResults/SearchResults";
 import Album from "./components/Album/Album";
 import Callback from "./components/callback";
+// import Callback from "./components/callback";
 
 export default function App() {
-  const { tokenIsSet } = useContext(context);
+
 
   return (
     <Router>
@@ -51,8 +50,11 @@ export default function App() {
         <Route path={"/callback"}>
           <Callback />
         </Route>
+        <Route path={"/home"}>
+          <div className="App">{<Home/>}</div>
+        </Route>
         <Route path={"/"}>
-          <div className="App">{tokenIsSet ? <Home /> : <Login />}</div>
+          <div className="App">{<Login/>}</div>
         </Route>
       </Switch>
     </Router>

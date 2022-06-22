@@ -45,17 +45,21 @@ const scopes = [
 
 //AUTH
 app.get("/login", cors(corsOptions), (req, res) => {
-  console.log("first");
+  // console.log("first");
   const url = spotifyApi.createAuthorizeURL(scopes);
-  // console.log('url', url);
-  res.redirect(url);
+  console.log('url', url);
+  if (url) {
+    res.json(url);
+  } else {
+    res.status(404).send();
+  }
 });
 
 app.get("/callback", cors(corsOptions), async (req, res) => {
   const error = req.query.error;
   const code = req.query.code;
   // const state = req.query.state;
-  console.log("second");
+  console.log("second", code);
 
   if (error) {
     console.error("Callback Error:", error);
@@ -79,7 +83,12 @@ app.get("/callback", cors(corsOptions), async (req, res) => {
       console.log(
         `Sucessfully retreived access token. Expires in ${expires_in} s.`
       );
-      // res.send(access_token);
+      // res.status(200).send("success");
+      if (access_token) {
+        res.json(access_token);
+      } else {
+        res.status(404).send();
+      }
 
       setInterval(async () => {
         const data = await spotifyApi.refreshAccessToken();
@@ -148,15 +157,22 @@ app.post("/playlists", cors(corsOptions), async (req, res) => {
   // }
 });
 
-app.delete("/playlists", cors(corsOptions), async (req, res) => {
-  // var playlistName = req.body.playlistName;
-  console.log('req.body.playlistId',req.body.playlistId);
+app.delete("/playlist", cors(corsOptions), async (req, res) => {
+
+  // console.log('req.body.playlistId',req.body.playlistId);
+  // console.log('req.body.trackUri', req.body.trackUri);
+  // console.log('req.body', req.body);
+
+  const playlistId = req.body.playlistId;
+  const trackUri = req.body.trackUri;
+
   try {
-    await spotifyApi.removeTracksFromPlaylist(req.body.playlistId, [req.body.uri]);
+    await spotifyApi.removeTracksFromPlaylist(playlistId, [trackUri]);
   } catch (error) {
     console.log(error);
   }
 });
+
 
 //ALBUMS
 app.get("/albums", cors(corsOptions), async (req, res) => {
@@ -200,7 +216,7 @@ app.delete("/album/:id", cors(corsOptions), async (req, res) => {
 });
 
 //SAVED_TRACKS
-app.get("/track", cors(corsOptions), async (req, res) => {
+app.get("/tracks", cors(corsOptions), async (req, res) => {
   const savedTracks = await spotifyApi.getMySavedTracks();
   // const json = await playlists.json();
   // console.log("savedTracks", savedTracks);
@@ -219,11 +235,15 @@ app.post("/track", cors(corsOptions), async (req, res) => {
     console.log(error);
   }
 });
-app.delete("/track", cors(corsOptions), async (req, res) => {
+app.delete("/track/:id", cors(corsOptions), async (req, res) => {
+
+
+  const track_id = req.params.id;
+
   // var playlistName = req.body.playlistName;
-  console.log('req.body.trackIndex',req.body.trackIndex);
+  console.log('track_id',track_id);
   try {
-    await spotifyApi.removeFromMySavedTracks([req.body.trackIndex]);
+    await spotifyApi.removeFromMySavedTracks([track_id]);
   } catch (error) {
     console.log(error);
   }

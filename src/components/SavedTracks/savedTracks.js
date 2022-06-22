@@ -1,26 +1,20 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { context } from "../../context/context";
+import {  useEffect, useState } from "react";
 import { Table } from "antd";
 import { Link } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useGetSavedTracksQuery } from "../../redux/savedTracksQuery";
+import { useDeleteSavedTrackMutation, useGetSavedTracksQuery } from "../../redux/savedTracksQuery";
 
 export default function SavedAlbums() {
-  const { getMySavedTracks, mySavedTracks, removeFromMySavedTracks, token, refreshPage } = useContext(context);
+
   const [dataTable, setData] = useState([]);
-  const initialRender = useRef(true);
+
+
+  const [deleteTrack] = useDeleteSavedTrackMutation();
 
   const {data, isLoading: isLoadingSavedTracks} = useGetSavedTracksQuery();
   
   console.log('savedTracks', data);
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    token === "" && refreshPage();
-    
-  }, [token]);
+
 
   useEffect(() => {
     data && data.length !==0 && setData([]);
@@ -72,12 +66,13 @@ export default function SavedAlbums() {
       title: "Del",
       key: "del",
       render: () => <DeleteOutlined />,
-      // onCell: (record, rowIndex) => {
-      //   return {
-      //     onClick: (event) => {handleSavedTrackDelete(rowIndex)}, // click row
+      onCell: (record, rowIndex) => {
+        let elem = data.filter((item, i) => rowIndex === i)[0];
+        return {          
+          onClick: () => {handleSavedTrackDelete(elem.track.id)}, // click row
 
-      //   };
-      // }
+        };
+      }
     },
   ];
 
@@ -117,11 +112,11 @@ export default function SavedAlbums() {
     setData((data) => [...data, obj]);
   };
 
-  // const handleSavedTrackDelete = async (rowIndex) => {
-  //   await removeFromMySavedTracks(rowIndex);
-  //   mySavedTracks.length !==0 && setData([]);
-  //   formatData();
-  // }
+  const handleSavedTrackDelete = async (rowIndex) => {
+    await deleteTrack(rowIndex);
+    data.length !==0 && setData([]);
+    formatData();
+  }
 
   return (
     <>

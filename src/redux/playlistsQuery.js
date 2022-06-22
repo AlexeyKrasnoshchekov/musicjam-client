@@ -32,7 +32,15 @@ export const playlistsApi = createApi({
                 body,
             })
         }),
+        deleteFromPlaylist: build.mutation({
+            query: (body) => ({
+                url: `playlist`,
+                method: 'DELETE',
+                body
+            })
+            
+        }),
     })
 });
 
-export const {useGetPlaylistsQuery, useGetPlaylistQuery, useCreatePlaylistMutation, useAddToPlaylistMutation} = playlistsApi;
+export const {useGetPlaylistsQuery, useGetPlaylistQuery, useCreatePlaylistMutation, useAddToPlaylistMutation, useDeleteFromPlaylistMutation} = playlistsApi;

@@ -1,23 +1,16 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import "./header.css";
-import { context } from "../../context/context";
 import { useHistory } from "react-router-dom";
 import { AutoComplete, Row, Col, Typography, Space } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useGetUserQuery } from "../../redux/userQuery";
+import { setAuthStatus } from "../../redux/authStatusSlice";
 
 function MyHeader() {
   const { Title } = Typography;
 
   const history = useHistory();
   const [options, setOptions] = useState([]);
-
-  const {
-    user,
-    search,
-    logout,
-    // searchResult
-  } = useContext(context);
 
   
 
@@ -28,7 +21,7 @@ function MyHeader() {
   // const types = ["artist", "album", "track"];
 
   const handleLogout = async () => {
-    logout();
+    setAuthStatus(false);
     history.push("/");
   };
 

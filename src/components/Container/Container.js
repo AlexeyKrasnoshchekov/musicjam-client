@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import MyHeader from "../Header/Header";
 import { Link, matchPath, useLocation, useRouteMatch, useHistory } from "react-router-dom";
@@ -39,7 +39,7 @@ const Container = (props) => {
 
   const { path } = useRouteMatch();
   const isHome = matchPath(path, {
-    path: "/",
+    path: "/home",
     exact: true,
     strict: false,
   });
@@ -188,4 +188,4 @@ const Container = (props) => {
   );
 };
 
-export default Container;
+export default React.memo(Container);

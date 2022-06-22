@@ -1,53 +1,27 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { context } from "../context/context";
-import { useHistory, useLocation, useParams } from "react-router-dom";
-import { getAccessToken, setUrl } from "../util/helpers";
+// import { useContext, useEffect, useRef, useState } from "react";
+// import { context } from "../context/context";
+// import { useHistory, useLocation, useParams } from "react-router-dom";
+// import { getAccessToken, setUrl } from "../util/helpers";
 import { Button, Col, Row, Divider, Image } from "antd";
+import { useGetUrlQuery } from "../redux/loginQuery";
+import { setAuthStatus } from "../redux/authStatusSlice";
+
 
 export default function Login() {
-  const { setToken, setUrl, tokenIsSet, setTokenIsSet, token } = useContext(context);
-  const [authUrlIsSet, setAuthUrlIsSet] = useState(false);
-  const history = useHistory();
-  const initialRender = useRef(true);
-  const location = useLocation();
 
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
 
-    // if (location.hash) {
-    //   const tokenLocal = getAccessToken();
-    //   console.log('first',tokenLocal);
-    //   setToken(tokenLocal);
-    //   localStorage.setItem("token", tokenLocal);
-    //   setTokenIsSet(true);
-    // }
-  }, [tokenIsSet]);
+  const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
+  console.log('url', url);
+
 
   const handleLogin = async () => {
-    if (token === "") {
-      // setUrl();
-      // console.log('first',location);
-      await setUrl();
+    if (url) {
+      window.location = url;
       
-    } else {
-      setTokenIsSet(true);
     }
   };
 
-  setInterval(() => {
-    setUrl();
 
-    if (location.hash) {
-      const tokenLocal = getAccessToken();
-      localStorage.setItem("token", tokenLocal);
-      // setTokenExpiresIn(tokenLocal.expiresIn);
-      setToken(tokenLocal);
-      setTokenIsSet(true);
-    }
-  }, 3600 * 1000); //one hour
 
   return (
     <Row align="middle" style={{ height: "100%" }}>

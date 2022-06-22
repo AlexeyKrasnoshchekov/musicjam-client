@@ -3,6 +3,7 @@ import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/
 import { playlistsApi } from '../redux/playlistsQuery';
 import { albumsApi } from './albumsQuery';
 import { artistApi } from './artistQuery';
+import { loginApi } from './loginQuery';
 import { savedTracksApi } from './savedTracksQuery';
 import { searchApi } from './searchQuery';
 import { userApi } from './userQuery';
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   [searchApi.reducerPath]: searchApi.reducer,
   [artistApi.reducerPath]: artistApi.reducer,
   [userApi.reducerPath]: userApi.reducer,
+  [loginApi.reducerPath]: loginApi.reducer,
 })
 
 

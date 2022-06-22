@@ -1,6 +1,5 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
-import { context } from "../../context/context";
 import "./SearchResults.css";
 import { useGetSearchQuery } from "../../redux/searchQuery";
 import {
@@ -16,36 +15,26 @@ import {
 import { HeartOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { useGetAlbumsQuery, useSaveAlbumMutation } from "../../redux/albumsQuery";
 import { useAddToPlaylistMutation, useGetPlaylistsQuery } from "../../redux/playlistsQuery";
-import { useSaveTrackMutation } from "../../redux/savedTracksQuery";
+import { useGetSavedTracksQuery, useSaveTrackMutation } from "../../redux/savedTracksQuery";
 
 export default function SearchResults() {
   const { Title } = Typography;
 
-  const {
-    searchResult,
-    getAlbum,
-    clearSavedAlbums,
-    getMySavedAlbums,
-    playlists,
-    mySavedAlbums,
-    mySavedTracks,
-    // getMySavedTracks,
-    clearSavedTracks,
-  } = useContext(context);
 
   const history = useHistory();
   const [data, setData] = useState([]);
 
   const { term } = useParams();
 console.log('term', term)
-  const {data: searchResult1, isLoading: isLoadingSeacrhResult} = useGetSearchQuery(term);
+  const {data: searchResult, isLoading: isLoadingSeacrhResult} = useGetSearchQuery(term);
   const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
-  const { data: playlists1, isLoading: isLoadingPlaylists } =
+  const { data: playlists, isLoading: isLoadingPlaylists } =
     useGetPlaylistsQuery();
+    const {data:myTracks, isLoading: isLoadingSavedTracks} = useGetSavedTracksQuery();
     const [addToPlaylist, {isError:addPlaylistError}] = useAddToPlaylistMutation();
     const [saveAlbum, {isError:saveAlbumError}] = useSaveAlbumMutation();
     const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
-  // console.log('searchResult1', searchResult1);
+  // console.log('searchResult', searchResult);
 
   // useEffect(() => {
   //   if (initialRender.current) {
@@ -56,20 +45,20 @@ console.log('term', term)
   // }, []);
 
   useEffect(() => {
-    searchResult1 &&
-      searchResult1.tracks &&
-      searchResult1.tracks.items.length !== 0 &&
+    searchResult &&
+      searchResult.tracks &&
+      searchResult.tracks.items.length !== 0 &&
       setData([]);
-    searchResult1 &&
-      searchResult1.tracks &&
-      searchResult1.tracks.items.length !== 0 &&
+    searchResult &&
+      searchResult.tracks &&
+      searchResult.tracks.items.length !== 0 &&
       formatData();
-  }, [searchResult1]);
+  }, [searchResult]);
 
-  const handleGetAlbum = async (id) => {
-    await getAlbum(id);
-    history.push(`/album/${id}`);
-  };
+  // const handleGetAlbum = async (id) => {
+  //   await getAlbum(id);
+  //   history.push(`/album/${id}`);
+  // };
 
   const handleAddToMyAlbums = async (albumId) => {
     await saveAlbum({albumId});
@@ -96,10 +85,11 @@ console.log('term', term)
       onCell: (record, rowIndex) => {
         return {
           onClick: () => {
-            let elem = searchResult1.tracks.items.filter(
+            let elem = searchResult.tracks.items.filter(
               (item, i) => rowIndex === i
             )[0];
-            handleGetAlbum(elem.album.id);
+            // handleGetAlbum(elem.album.id);
+            history.push(`/album/${elem.album.id}`);
           }, // click row
         };
       },
@@ -127,7 +117,7 @@ console.log('term', term)
       render: (text, record, rowIndex) => {
         let elem = data.filter((item, i) => rowIndex === i)[0];
         
-        return ((!elem.isSaved && mySavedTracks.filter(item => item.track.id === elem.id).length === 0) ? <HeartOutlined /> : <></>);
+        return ((!elem.isSaved && myTracks.filter(item => item.track.id === elem.id).length === 0) ? <HeartOutlined /> : <></>);
         // mySavedTracks.filter(item => item.track.id === elem.id).length === 0 ? <span></span> : <HeartOutlined />;
       },
       onCell: (record, rowIndex) => {
@@ -147,7 +137,7 @@ console.log('term', term)
         <Dropdown
           overlay={
             <Menu>
-              {playlists1 && playlists1.length !==0 && playlists1.map((playlist, index) => {
+              {playlists && playlists.length !==0 && playlists.map((playlist, index) => {
                 return (
                   <Menu.Item
                     key={index}
@@ -177,10 +167,10 @@ console.log('term', term)
 
   const formatData = () => {
     let trackIsSaved = false;
-    searchResult1.tracks.items.length !== 0 &&
-      searchResult1.tracks.items.forEach((item) => {
+    searchResult.tracks.items.length !== 0 &&
+      searchResult.tracks.items.forEach((item) => {
         
-        trackIsSaved = mySavedTracks.some((elem) => elem.track.name === item.name);
+        trackIsSaved = myTracks.some((elem) => elem.track.name === item.name);
 
         createDataObj(
           item.name,
@@ -260,16 +250,16 @@ console.log('term', term)
 
   return (
     <div>
-      {searchResult1 && (
+      {searchResult && (
         <div>
-          {searchResult1.albums && (
+          {searchResult.albums && (
             <div>
               <Title level={4}>Albums</Title>
               {/* <Row>
                 <Col span={24}> */}
               <div className="albums-grid">
-                {searchResult1.albums.items.length !== 0 &&
-                  searchResult1.albums.items.map((album, index) => {
+                {searchResult.albums.items.length !== 0 &&
+                  searchResult.albums.items.map((album, index) => {
                     return (
                       <Card
                         hoverable
@@ -313,12 +303,12 @@ console.log('term', term)
               </Row> */}
             </div>
           )}
-          {searchResult1.artists.items.length !== 0 && (
+          {searchResult.artists.items.length !== 0 && (
             <div>
               <Title level={4}>Artists</Title>
               <div className="artists-grid">
-                {searchResult1.artists.items &&
-                  searchResult1.artists.items.map((artist, index) => {
+                {searchResult.artists.items &&
+                  searchResult.artists.items.map((artist, index) => {
                     return (
                       <Card
                         hoverable

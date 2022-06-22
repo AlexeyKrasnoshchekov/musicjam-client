@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 // import { context } from "../../context/context";
 import { Col, Image, Row, Table, Typography } from "antd";
 import { DeleteOutlined, HeartOutlined } from "@ant-design/icons";
-import { useGetPlaylistQuery } from "../../redux/playlistsQuery";
+import { useDeleteFromPlaylistMutation, useGetPlaylistQuery } from "../../redux/playlistsQuery";
 import { useGetSavedTracksQuery, useSaveTrackMutation } from "../../redux/savedTracksQuery";
 
 export default function Playlist() {
@@ -15,15 +15,13 @@ export default function Playlist() {
   const {data: playlist1, isLoading: isLoadingPlaylist} = useGetPlaylistQuery(id);
   const {data: myTracks, isLoading: isLoadingSavedTracks} = useGetSavedTracksQuery();
   const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
+  const [deleteFromPlaylist] = useDeleteFromPlaylistMutation();
 
   console.log('playlist1', playlist1);
   
 
   
 
-  // const { token,
-  //   refreshPage, playlist, playlistItems, clearPlaylistItems, getPlaylist, removeFromPlaylist, clearSavedTracks, getMySavedTracks, mySavedTracks } =
-  //   useContext(context);
 
   // useEffect(() => {
   //   if (initialRender.current) {
@@ -121,7 +119,8 @@ export default function Playlist() {
           onClick: () => {
             let elem = data.filter((item, i) => rowIndex === i)[0];
             console.log("elem", elem);
-            // removeFromPlaylist(playlist.id, elem.uri, elem.id);
+            // deleteFromPlaylist({playlistId: playlist1.id, trackUri: elem.uri});
+            // removeFromPlaylist(playlist1.id, elem.uri);
           },
         };
       },

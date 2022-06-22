@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import State from "./context/context";
+// import State from "./context/context";
 // import "./index.css";
 import "antd/dist/antd.css";
 import App from "./App";
@@ -14,11 +14,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <State>
+    {/* <State> */}
       <Provider store={store}>
         <App />
       </Provider>
-    </State>
+    {/* </State> */}
   </React.StrictMode>
 );
 

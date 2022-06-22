@@ -1,29 +1,35 @@
-import React, { useContext, useEffect, useRef } from 'react'
-import { useHistory, useLocation } from 'react-router-dom';
-import { context } from '../context/context';
+import React, { useEffect } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+
+// import { setAuthStatus } from "../redux/authStatusSlice";
+// import { useSelector } from "react-redux";
+import { useGetTokenQuery } from "../redux/loginQuery";
 
 export default function Callback() {
-const { getToken,tokenIsSet, setTokenIsSet } = useContext(context);
-const location = useLocation();
-const history = useHistory();
-console.log('location', location);
-const initialRender = useRef(true);
+  const location = useLocation();
+  const history = useHistory();
+  console.log("location", location.search);
 
-useEffect(() => {
-    if (initialRender.current) {
-        initialRender.current = false;
-        return;
-      }
-      getToken(location.search);
-    setTokenIsSet(true);
-    // history.push('/');
-  }, []);
+
+  // const initialRender = useRef(true);
+
+  // const isLoggedIn = useSelector(selectAuthStatus);
+  const {data, isLoading: isLoadingSavedToken} = useGetTokenQuery(location.search);
+  console.log("data", data);
+  
+
+  // useEffect(() => {
+  //   if (initialRender.current) {
+  //     initialRender.current = false;
+  //     return;
+  //   }
+  //   setAuthStatus(true);
+  // }, []);
 
   useEffect(() => {
-    tokenIsSet && history.push('/');
-  }, [tokenIsSet]);
+    // setAuthStatus(true);
+    data && history.push("/home");
+  }, [data]);
 
-  return (
-    <div></div>
-  )
+  return <></>;
 }
