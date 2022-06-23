@@ -52,8 +52,6 @@ export default function Album() {
   const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
   const [deleteAlbum] = useDeleteAlbumMutation();
 
-  console.log("album1", album);
-
   // const handleGetAlbum = async (id) => {
   //   await getAlbum(id);
   // };
@@ -78,9 +76,23 @@ export default function Album() {
     if (album) {
       checkForSavedAlbum(album.id);
       album.tracks.items.length !== 0 && setData([]);
-      formatData();
+      
+      album.tracks.items.length !== 0 &&
+      album.tracks.items.forEach((item) => {
+        setData((data) => [
+          ...data,
+          {
+            name: item.name,
+            number: item.artists[0].name,
+            duration: item.duration_ms / 1000,
+            uri: item.uri,
+            id: item.id
+          },
+        ]);
+      });
     }
   }, [album]);
+
 
   const columns = [
     {
@@ -146,39 +158,7 @@ export default function Album() {
     },
   ];
 
-  const formatData = () => {
-    album.tracks &&
-      album.tracks.items.forEach((item) => {
-        createDataObj(
-          item.name,
-          item.track_number,
-          item.duration_ms / 1000,
-          item.uri,
-          item.id
-        );
-      });
-  };
-
-  const createDataObj = (name, trackNumber, duration, uri, id) => {
-    let obj = {
-      name: "",
-      number: "",
-      duration: "",
-      uri: "",
-      id: "",
-    };
-
-    let duration_min = Math.floor(duration / 60);
-    let duration_sec = Math.round(duration % 60);
-
-    obj.name = name;
-    obj.number = trackNumber;
-    obj.duration = `${duration_min}:${duration_sec}`;
-    obj.uri = uri;
-    obj.id = id;
-    // setData([]);
-    setData((data) => [...data, obj]);
-  };
+ 
 
   const handleAddToMyAlbums = async () => {
     await saveAlbum({albumId: album.id});

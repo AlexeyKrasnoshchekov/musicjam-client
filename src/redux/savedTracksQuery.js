@@ -1,27 +1,40 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const savedTracksApi = createApi({
-    reducerPath: 'savedTracksApi',
-    baseQuery: fetchBaseQuery({baseUrl:`http://localhost:8000`}),
-    endpoints: (build) => ({
-        getSavedTracks: build.query({
-            query: () => 'tracks'
-        }),
-        saveTrack: build.mutation({
-            query: (body) => ({
-                url: 'track',
-                method: 'POST',
-                body,
-            })
-        }),
-        deleteSavedTrack: build.mutation({
-            query: (trackId) => ({
-                url: `track/${trackId}`,
-                method: 'DELETE'
-            })
-            
-        }),
-    })
+  reducerPath: "savedTracksApi",
+  tagTypes: ["savedTracks"],
+  baseQuery: fetchBaseQuery({ baseUrl: `http://localhost:8000` }),
+  endpoints: (build) => ({
+    getSavedTracks: build.query({
+      query: () => "tracks",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "savedTracks", id })),
+              { type: "savedTracks", id: "LIST" },
+            ]
+          : [{ type: "savedTracks", id: "LIST" }],
+    }),
+    saveTrack: build.mutation({
+      query: (body) => ({
+        url: "track",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "savedTracks", id: "LIST" }],
+    }),
+    deleteSavedTrack: build.mutation({
+      query: (trackId) => ({
+        url: `track/${trackId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "savedTracks", id: "LIST" }],
+    }),
+  }),
 });
 
-export const {useGetSavedTracksQuery, useSaveTrackMutation, useDeleteSavedTrackMutation} = savedTracksApi;
+export const {
+  useGetSavedTracksQuery,
+  useSaveTrackMutation,
+  useDeleteSavedTrackMutation,
+} = savedTracksApi;

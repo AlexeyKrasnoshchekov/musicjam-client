@@ -8,14 +8,12 @@ import { useGetTokenQuery } from "../redux/loginQuery";
 export default function Callback() {
   const location = useLocation();
   const history = useHistory();
-  console.log("location", location.search);
 
 
   // const initialRender = useRef(true);
 
   // const isLoggedIn = useSelector(selectAuthStatus);
   const {data, isLoading: isLoadingSavedToken} = useGetTokenQuery(location.search);
-  console.log("data", data);
   
 
   // useEffect(() => {

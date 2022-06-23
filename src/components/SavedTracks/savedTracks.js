@@ -1,26 +1,44 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table } from "antd";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { DeleteOutlined } from "@ant-design/icons";
-import { useDeleteSavedTrackMutation, useGetSavedTracksQuery } from "../../redux/savedTracksQuery";
+import {
+  useDeleteSavedTrackMutation,
+  useGetSavedTracksQuery,
+} from "../../redux/savedTracksQuery";
 
 export default function SavedAlbums() {
-
   const [dataTable, setData] = useState([]);
-
+  const history = useHistory();
 
   const [deleteTrack] = useDeleteSavedTrackMutation();
 
-  const {data, isLoading: isLoadingSavedTracks} = useGetSavedTracksQuery();
-  
-  console.log('savedTracks', data);
+  const handleDeleteTrack = async (id) => {
+    await deleteTrack(id).unwrap();
+  }
 
+  const { data, isLoading: isLoadingSavedTracks } = useGetSavedTracksQuery();
+
+  console.log("savedTracks", data);
 
   useEffect(() => {
-    data && data.length !==0 && setData([]);
-    formatData();
+    data &&
+      data.forEach((item) => {
+        setData((data) => [
+          ...data,
+          {
+            added: item.added_at.split("T")[0],
+            name: item.track.name,
+            artist: item.track.artists[0].name,
+            album: item.track.album.name,
+            released: item.track.album.release_date,
+            duration: `${Math.floor(
+              item.track.duration_ms / 1000 / 60
+            )}:${Math.round((item.track.duration_ms / 1000) % 60)}`,
+          },
+        ]);
+      });
   }, [data]);
-
 
   const columns = [
     {
@@ -30,11 +48,17 @@ export default function SavedAlbums() {
     },
     {
       title: "Artist",
-      key: "artist",
       dataIndex: "artist",
-      render: (text, record, rowIndex) => {
-        let elem = data.filter((item, i) => rowIndex === i)[0];
-        elem && <Link to={`/artist/${elem.track.artists[0].id}`}>{elem.track.artists[0].name}</Link>
+      key: "artist",
+      render: (text) => <a>{text}</a>,
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: () => {
+            let elem = data.filter((item, i) => rowIndex === i)[0];
+            // handleGetAlbum(elem.album.id);
+            history.push(`/artist/${elem.track.artists[0].id}`);
+          }, // click row
+        };
       },
     },
     {
@@ -46,9 +70,15 @@ export default function SavedAlbums() {
       title: "Album",
       dataIndex: "album",
       key: "album",
-      render: (text, record, rowIndex) => {
-        let elem = data.filter((item, i) => rowIndex === i)[0];
-        elem && <Link to={`/album/${elem.track.album.id}`}>{elem.track.album.name}</Link>
+      render: (text) => <a>{text}</a>,
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: () => {
+            let elem = data.filter((item, i) => rowIndex === i)[0];
+            // handleGetAlbum(elem.album.id);
+            history.push(`/album/${elem.track.album.id}`);
+          }, // click row
+        };
       },
     },
     {
@@ -68,64 +98,27 @@ export default function SavedAlbums() {
       render: () => <DeleteOutlined />,
       onCell: (record, rowIndex) => {
         let elem = data.filter((item, i) => rowIndex === i)[0];
-        return {          
-          onClick: () => {handleSavedTrackDelete(elem.track.id)}, // click row
-
+        return {
+          onClick: () => {
+            handleDeleteTrack(elem.track.id);
+          }, // click row
         };
-      }
+      },
     },
   ];
-
-  const formatData = () => {
-    data && data.length !== 0 &&
-      data.forEach((item) => {
-        createDataObj(
-          item.added_at.split("T")[0],
-          item.track.name,
-          item.track.artists[0].name,
-          item.track.album.name,
-          item.track.album.release_date,
-          item.track.duration_ms / 1000
-        );
-      });
-  };
-
-  const createDataObj = (added, name, artist, album, released, duration) => {
-    let obj = {
-      added: "",
-      name: "",
-      artist: "",
-      album: "",
-      released: "",
-      duration: "",
-    };
-
-    let duration_min = Math.floor(duration / 60);
-    let duration_sec = Math.round(duration % 60);
-
-    obj.added = added;
-    obj.name = name;
-    obj.artist = artist;
-    obj.album = album;
-    obj.released = released;
-    obj.duration = `${duration_min}:${duration_sec}`;
-    setData((data) => [...data, obj]);
-  };
-
-  const handleSavedTrackDelete = async (rowIndex) => {
-    await deleteTrack(rowIndex);
-    data.length !==0 && setData([]);
-    formatData();
-  }
 
   return (
     <>
       {dataTable && (
-        <Table
-          columns={columns}
-          dataSource={dataTable}
-        />
+        <Table key={111222} columns={columns} dataSource={dataTable} />
       )}
+       {/* <ul>
+        {data && data.map(item => (
+          <li key={item.track.name} onClick={() => handleDeleteTrack(item.track.id)}>
+            {item.track.name}
+          </li>
+        ))}
+      </ul> */}
     </>
   );
 }

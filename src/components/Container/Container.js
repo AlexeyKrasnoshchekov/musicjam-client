@@ -27,10 +27,6 @@ const Container = (props) => {
   const {data: myAlbums, isLoading: isLoadingAlbums} = useGetAlbumsQuery();
   const [createPlaylist, {isError}] = useCreatePlaylistMutation();
 
-  // const playlistsData = useGetPlaylistsQuery();
-  // const playlists1 = playlistsData.data;
-  // console.log('ffgg', playlists1);
-  // console.log('myAlbums', isLoadingAlbums);
 
 
   const [playlistName, setPlaylistName] = useState("");

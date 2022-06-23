@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import { AutoComplete, Row, Col, Typography, Space } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { useGetUserQuery } from "../../redux/userQuery";
-import { setAuthStatus } from "../../redux/authStatusSlice";
 
 function MyHeader() {
   const { Title } = Typography;
@@ -16,12 +15,10 @@ function MyHeader() {
 
   const { data: user1, isLoading: isLoadingUser } = useGetUserQuery();
 
-  console.log('user1', user1);
 
   // const types = ["artist", "album", "track"];
 
   const handleLogout = async () => {
-    setAuthStatus(false);
     history.push("/");
   };
 
@@ -39,7 +36,6 @@ function MyHeader() {
 
   const onSelect = (data) => {
     // search(data);
-    console.log('ffggfg', data);
     const term = data.replace(/ /g, "_")
     history.push(`/search/${term}`);
   };

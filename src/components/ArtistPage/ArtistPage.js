@@ -15,7 +15,6 @@ export default function Album() {
   const { id } = useParams();
 
   const {data: artistObj, isLoading: isLoadingArtist} = useGetArtistQuery(id);
-  console.log('artistObj', artistObj);
 
 
   return (

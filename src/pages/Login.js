@@ -4,14 +4,12 @@
 // import { getAccessToken, setUrl } from "../util/helpers";
 import { Button, Col, Row, Divider, Image } from "antd";
 import { useGetUrlQuery } from "../redux/loginQuery";
-import { setAuthStatus } from "../redux/authStatusSlice";
 
 
 export default function Login() {
 
 
   const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
-  console.log('url', url);
 
 
   const handleLogin = async () => {
