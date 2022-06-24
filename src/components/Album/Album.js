@@ -14,8 +14,16 @@ import {
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDeleteAlbumMutation, useGetAlbumQuery, useGetAlbumsQuery, useSaveAlbumMutation } from "../../redux/albumsQuery";
-import { useAddToPlaylistMutation, useGetPlaylistsQuery } from "../../redux/playlistsQuery";
+import {
+  useDeleteAlbumMutation,
+  useGetAlbumQuery,
+  useGetAlbumsQuery,
+  useSaveAlbumMutation,
+} from "../../redux/albumsQuery";
+import {
+  useAddToPlaylistMutation,
+  useGetPlaylistsQuery,
+} from "../../redux/playlistsQuery";
 import { useSaveTrackMutation } from "../../redux/savedTracksQuery";
 import "./album.css";
 
@@ -25,6 +33,26 @@ export default function Album() {
 
   const [data, setData] = useState([]);
   const { Title } = Typography;
+
+  const [windowDimenion, detectHW] = useState({
+    winWidth: window.innerWidth,
+    winHeight: window.innerHeight,
+  });
+
+  const detectSize = () => {
+    detectHW({
+      winWidth: window.innerWidth,
+      winHeight: window.innerHeight,
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", detectSize);
+
+    return () => {
+      window.removeEventListener("resize", detectSize);
+    };
+  }, [windowDimenion]);
 
   // const {
   //   token,
@@ -47,9 +75,10 @@ export default function Album() {
   const { data: playlists1, isLoading: isLoadingPlaylists } =
     useGetPlaylistsQuery();
   const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
-  const [addToPlaylist, {isError:addPlaylistError}] = useAddToPlaylistMutation();
-  const [saveAlbum, {isError:saveAlbumError}] = useSaveAlbumMutation();
-  const [saveTrack, {isError:saveTrackError}] = useSaveTrackMutation();
+  const [addToPlaylist, { isError: addPlaylistError }] =
+    useAddToPlaylistMutation();
+  const [saveAlbum, { isError: saveAlbumError }] = useSaveAlbumMutation();
+  const [saveTrack, { isError: saveTrackError }] = useSaveTrackMutation();
   const [deleteAlbum] = useDeleteAlbumMutation();
 
   // const handleGetAlbum = async (id) => {
@@ -76,23 +105,22 @@ export default function Album() {
     if (album) {
       checkForSavedAlbum(album.id);
       album.tracks.items.length !== 0 && setData([]);
-      
+
       album.tracks.items.length !== 0 &&
-      album.tracks.items.forEach((item) => {
-        setData((data) => [
-          ...data,
-          {
-            name: item.name,
-            number: item.artists[0].name,
-            duration: item.duration_ms / 1000,
-            uri: item.uri,
-            id: item.id
-          },
-        ]);
-      });
+        album.tracks.items.forEach((item) => {
+          setData((data) => [
+            ...data,
+            {
+              name: item.name,
+              number: item.artists[0].name,
+              duration: item.duration_ms / 1000,
+              uri: item.uri,
+              id: item.id,
+            },
+          ]);
+        });
     }
   }, [album]);
-
 
   const columns = [
     {
@@ -114,23 +142,25 @@ export default function Album() {
         <Dropdown
           overlay={
             <Menu>
-              {playlists1 && playlists1.length !==0 && playlists1
-                .filter((playlist) => playlist.tracks.total !== 0)
-                .map((playlist, index) => {
-                  return (
-                    <Menu.Item
-                      key={index}
-                      onClick={() => {
-                        handleAddToPlaylist(
-                          playlist.id,
-                          data.filter((item, i) => rowIndex === i)[0].uri
-                        );
-                      }}
-                    >
-                      {playlist.name}
-                    </Menu.Item>
-                  );
-                })}
+              {playlists1 &&
+                playlists1.length !== 0 &&
+                playlists1
+                  .filter((playlist) => playlist.tracks.total !== 0)
+                  .map((playlist, index) => {
+                    return (
+                      <Menu.Item
+                        key={index}
+                        onClick={() => {
+                          handleAddToPlaylist(
+                            playlist.id,
+                            data.filter((item, i) => rowIndex === i)[0].uri
+                          );
+                        }}
+                      >
+                        {playlist.name}
+                      </Menu.Item>
+                    );
+                  })}
             </Menu>
           }
         >
@@ -158,10 +188,8 @@ export default function Album() {
     },
   ];
 
- 
-
   const handleAddToMyAlbums = async () => {
-    await saveAlbum({albumId: album.id});
+    await saveAlbum({ albumId: album.id });
     // await clearSavedAlbums();
     // await getMySavedAlbums();
     setAlbumIsSaved((state) => !state);
@@ -173,13 +201,13 @@ export default function Album() {
     setAlbumIsSaved((state) => !state);
   };
   const handleAddTrack = async (trackId) => {
-    await saveTrack({trackId});
+    await saveTrack({ trackId });
     // await clearSavedTracks();
     // await getMySavedTracks();
   };
 
   const handleAddToPlaylist = async (playlistId, trackUri) => {
-    await addToPlaylist({playlistId: playlistId, uri: trackUri});
+    await addToPlaylist({ playlistId: playlistId, uri: trackUri });
 
     if (!addPlaylistError) {
       notification.open({
@@ -195,7 +223,8 @@ export default function Album() {
   };
 
   const checkForSavedAlbum = (albumId) => {
-    myAlbums && myAlbums.length !== 0 &&
+    myAlbums &&
+      myAlbums.length !== 0 &&
       myAlbums.forEach((savedAlbum) => {
         if (savedAlbum.album.id === albumId) {
           setAlbumIsSaved(true);
@@ -206,28 +235,71 @@ export default function Album() {
   return (
     <>
       {album && (
-        <Row>
-          <Col span={8}>
-            <Image
-              width={300}
-              src={album.images.length !== 0 && album.images[imageIndex].url}
-            />
-          </Col>
-          <Col span={16}>
-            <Title
-              level={2}
-            >{`${album.tracks.items[0].artists[0].name} - ${album.name}`}</Title>
-            <Title level={4}>{`Released: ${album.release_date}`}</Title>
-            <Title level={4}>{`Popularity: ${album.popularity}`}</Title>
-            <Title level={4}>{`Total tracks: ${album.total_tracks}`}</Title>
-            {albumIsSaved ? (
-              <Button onClick={() => handleDeleteFromMyAlbums()}>Unsave</Button>
-              // <Button>Unsave</Button>
-            ) : (
-              <Button onClick={() => handleAddToMyAlbums()}>Save</Button>
-            )}
-          </Col>
-        </Row>
+        <>
+          {windowDimenion.winWidth > 576 && (
+            <Row gutter={50}>
+              <Col lg={{ span: 8 }} md={{ span: 12 }} sm={{ span: 12 }}>
+                <Image
+                  width="100%"
+                  src={
+                    album.images.length !== 0 && album.images[imageIndex].url
+                  }
+                />
+              </Col>
+              <Col lg={{ span: 16 }} md={{ span: 12 }} sm={{ span: 12 }}>
+                <Title
+                  level={2}
+                >{`${album.tracks.items[0].artists[0].name} - ${album.name}`}</Title>
+                <Title level={4}>{`Released: ${album.release_date}`}</Title>
+                <Title level={4}>{`Popularity: ${album.popularity}`}</Title>
+                <Title level={4}>{`Total tracks: ${album.total_tracks}`}</Title>
+                {albumIsSaved ? (
+                  <Button onClick={() => handleDeleteFromMyAlbums()}>
+                    Unsave
+                  </Button>
+                ) : (
+                  // <Button>Unsave</Button>
+                  <Button onClick={() => handleAddToMyAlbums()}>Save</Button>
+                )}
+              </Col>
+            </Row>
+          )}
+          {windowDimenion.winWidth < 576 && (
+            <Row gutter={50}>
+              <Row>
+                <Col span={24}>
+                  <Image
+                    width="100%"
+                    preview={false}
+                    src={
+                      album.images.length !== 0 && album.images[imageIndex].url
+                    }
+                  />
+                </Col>
+              </Row>
+              <Row justify="center" style={{width: '100%'}}>
+                <Col style={{padding: '1rem 0', textAlign: 'center'}}>
+                  <Title
+                    level={2}
+                  >{`${album.tracks.items[0].artists[0].name} - ${album.name}`}</Title>
+                  <Title level={4}>{`Released: ${album.release_date}`}</Title>
+                  <Title level={4}>{`Popularity: ${album.popularity}`}</Title>
+                  <Title
+                    level={4}
+                  >{`Total tracks: ${album.total_tracks}`}</Title>
+                  {albumIsSaved ? (
+                    <Button onClick={() => handleDeleteFromMyAlbums()}>
+                      Unsave
+                    </Button>
+                  ) : (
+                    // <Button>Unsave</Button>
+                    <Button onClick={() => handleAddToMyAlbums()}>Save</Button>
+                  )}
+                </Col>
+              </Row>
+            </Row>
+          )}
+        </>
       )}
 
       <Row>

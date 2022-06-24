@@ -22,8 +22,12 @@
 .albums-grid, .artists-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  justify-items:center;
+  text-align: left;
   grid-gap: 0.5rem;
-  justify-content: space-between;
   margin-bottom: 4rem;
 }

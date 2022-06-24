@@ -83,85 +83,93 @@ const MyDrawer = () => {
   };
 
   return (
-    <div className="drawer">
-      <Button type="primary" onClick={showDrawer}>
-        <MenuOutlined />
-      </Button>
-      {/* <MenuOutlined onClick={showDrawer}/> */}
-      <Drawer
-        title={`Logged in as ${user && user.display_name}`}
-        placement="left"
-        onClose={onClose}
-        visible={visible}
-      >
-        <Menu
-          mode="inline"
-          defaultSelectedKeys={["sub1"]}
-          style={{
-            height: "100%",
-          }}
-        >
-          <SubMenu
-            key="sub1"
-            title="Playlists"
-            icon={<UnorderedListOutlined />}
+    <>
+      {notEmptyPlaylists && myAlbums && (
+        <div className="drawer">
+          <Button type="primary" onClick={showDrawer}>
+            <MenuOutlined />
+          </Button>
+          {/* <MenuOutlined onClick={showDrawer}/> */}
+          <Drawer
+            title={`Logged in as ${user && user.display_name}`}
+            placement="left"
+            onClose={onClose}
+            visible={visible}
           >
-            <>
-              <Menu.Item key="1">
-                <Button onClick={() => showModal()}>Create</Button>
-              </Menu.Item>
-              <Modal
-                title="New playlist"
-                visible={isModalVisible}
-                onOk={handleOk}
-                onCancel={handleCancel}
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={["sub1"]}
+              style={{
+                height: "100%",
+              }}
+            >
+              <SubMenu
+                key="sub1"
+                title="Playlists"
+                icon={<UnorderedListOutlined />}
               >
-                <Input
-                  maxLength={20}
-                  onChange={(e) => {
-                    setPlaylistName(e.target.value);
-                  }}
-                  placeholder="enter playlist name"
-                />
-              </Modal>
-              {notEmptyPlaylists && notEmptyPlaylists.map((playlist, index) => {
-                const subKey = 1 + index + 1;
-                return (
-                  <Menu.Item key={subKey}>
-                    <Link to={`/playlist/${playlist.id}`}>{playlist.name}</Link>
+                <>
+                  <Menu.Item key="1">
+                    <Button onClick={() => showModal()}>Create</Button>
                   </Menu.Item>
-                );
-              })}
-            </>
-          </SubMenu>
-          <SubMenu
-            key="sub2"
-            title="Saved Albums"
-            icon={<PlaySquareOutlined />}
-          >
-            {myAlbums && myAlbums.map((item, index) => {
-              const subKey = 1 + notEmptyPlaylists.length + index + 1;
-              return (
-                <Menu.Item key={subKey}>
-                  <Link to={`/album/${item.album.id}`}>
-                    {`${item.album.name} (${item.album.artists[0].name})`}
-                  </Link>
-                </Menu.Item>
-              );
-            })}
-          </SubMenu>
-          <Menu.Item
-            key={1 + notEmptyPlaylists.length + myAlbums.length + 1}
-            icon={<HeartOutlined />}
-            onClick={() => {
-              history.push(`/savedtracks`);
-            }}
-          >
-            Saved Tracks
-          </Menu.Item>
-        </Menu>
-      </Drawer>
-    </div>
+                  <Modal
+                    title="New playlist"
+                    visible={isModalVisible}
+                    onOk={handleOk}
+                    onCancel={handleCancel}
+                  >
+                    <Input
+                      maxLength={20}
+                      onChange={(e) => {
+                        setPlaylistName(e.target.value);
+                      }}
+                      placeholder="enter playlist name"
+                    />
+                  </Modal>
+                  {notEmptyPlaylists &&
+                    notEmptyPlaylists.map((playlist, index) => {
+                      const subKey = 1 + index + 1;
+                      return (
+                        <Menu.Item key={subKey}>
+                          <Link to={`/playlist/${playlist.id}`}>
+                            {playlist.name}
+                          </Link>
+                        </Menu.Item>
+                      );
+                    })}
+                </>
+              </SubMenu>
+              <SubMenu
+                key="sub2"
+                title="Saved Albums"
+                icon={<PlaySquareOutlined />}
+              >
+                {myAlbums &&
+                  myAlbums.map((item, index) => {
+                    const subKey = 1 + notEmptyPlaylists.length + index + 1;
+                    return (
+                      <Menu.Item key={subKey}>
+                        <Link to={`/album/${item.album.id}`}>
+                          {`${item.album.name} (${item.album.artists[0].name})`}
+                        </Link>
+                      </Menu.Item>
+                    );
+                  })}
+              </SubMenu>
+              <Menu.Item
+                key={1 + notEmptyPlaylists.length + myAlbums.length + 1}
+                icon={<HeartOutlined />}
+                onClick={() => {
+                  history.push(`/savedtracks`);
+                }}
+              >
+                Saved Tracks
+              </Menu.Item>
+            </Menu>
+          </Drawer>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -224,7 +224,7 @@ export default function Playlist() {
           {windowDimenion.winWidth > 576 && (
             <Row gutter={50}>
               <Col
-                style={{ outline: "1px solid red" }}
+              
                 lg={{ span: 8 }}
                 md={{ span: 12 }}
                 sm={{ span: 12 }}
@@ -232,7 +232,7 @@ export default function Playlist() {
                 <Image width="100&" src={playlist.images[imageIndex].url} />
               </Col>
               <Col
-                style={{ outline: "1px solid red" }}
+              
                 lg={{ span: 16 }}
                 md={{ span: 12 }}
                 sm={{ span: 12 }}
@@ -244,7 +244,7 @@ export default function Playlist() {
           {windowDimenion.winWidth < 576 && (
             <Row gutter={50}>
               <Row>
-                <Col style={{ outline: "1px solid red" }} xs={{ span: 24 }}>
+                <Col xs={{ span: 24 }}>
                   <Image preview={false} width="100&" src={playlist.images[imageIndex].url} />
                 </Col>
               </Row>

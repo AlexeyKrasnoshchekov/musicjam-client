@@ -2,7 +2,7 @@ import { Col, Image, Row, Typography, Card } from "antd";
 
 import "../SearchResults/SearchResults.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useGetArtistQuery } from "../../redux/artistQuery";
 
@@ -11,28 +11,82 @@ export default function Album() {
 
   const { Title } = Typography;
 
-
   const { id } = useParams();
 
-  const {data: artistObj, isLoading: isLoadingArtist} = useGetArtistQuery(id);
+  const { data: artistObj, isLoading: isLoadingArtist } = useGetArtistQuery(id);
 
+  const [windowDimenion, detectHW] = useState({
+    winWidth: window.innerWidth,
+    winHeight: window.innerHeight,
+  });
+
+  const detectSize = () => {
+    detectHW({
+      winWidth: window.innerWidth,
+      winHeight: window.innerHeight,
+    });
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", detectSize);
+
+    return () => {
+      window.removeEventListener("resize", detectSize);
+    };
+  }, [windowDimenion]);
 
   return (
     <>
       {artistObj && artistObj.artist && (
-        <Row>
-          <Col span={8}>
-            <Image
-              width={300}
-              src={artistObj.artist.images.length !== 0 && artistObj.artist.images[imageIndex].url}
-            />
-          </Col>
-          <Col span={16}>
-            <Title level={2}>{`${artistObj.artist.name}`}</Title>
-            <Title level={4}>{`Genres: ${artistObj.artist.genres.join("; ")}`}</Title>
-            <Title level={4}>{`Popularity: ${artistObj.artist.popularity}`}</Title>
-          </Col>
-        </Row>
+        <>
+          {windowDimenion.winWidth > 576 && (
+            <Row gutter={50}>
+              <Col lg={{ span: 8 }} md={{ span: 12 }} sm={{ span: 12 }}>
+                <Image
+                  width="100%"
+                  src={
+                    artistObj.artist.images.length !== 0 &&
+                    artistObj.artist.images[imageIndex].url
+                  }
+                />
+              </Col>
+              <Col lg={{ span: 16 }} md={{ span: 12 }} sm={{ span: 12 }}>
+                <Title level={2}>{`${artistObj.artist.name}`}</Title>
+                <Title level={4}>{`Genres: ${artistObj.artist.genres.join(
+                  "; "
+                )}`}</Title>
+                <Title
+                  level={4}
+                >{`Popularity: ${artistObj.artist.popularity}`}</Title>
+              </Col>
+            </Row>
+          )}
+          {windowDimenion.winWidth < 576 && (
+            <Row align="center" gutter={50}>
+              <Col>
+                <Image
+                  width="100%"
+                  preview={false}
+                  src={
+                    artistObj.artist.images.length !== 0 &&
+                    artistObj.artist.images[imageIndex].url
+                  }
+                />
+              </Col>
+              <Row justify="center" style={{ width: "100%" }}>
+                <Col style={{ padding: "1rem 0", textAlign: "center" }}>
+                  <Title level={2}>{`${artistObj.artist.name}`}</Title>
+                  <Title level={4}>{`Genres: ${artistObj.artist.genres.join(
+                    "; "
+                  )}`}</Title>
+                  <Title
+                    level={4}
+                  >{`Popularity: ${artistObj.artist.popularity}`}</Title>
+                </Col>
+              </Row>
+            </Row>
+          )}
+        </>
       )}
 
       {artistObj && artistObj.artistAlbums.length !== 0 && (
