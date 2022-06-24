@@ -23,7 +23,7 @@ const Container = (props) => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const location = useLocation();
-  const {data: playlists1, isLoading: isLoadingPlaylists} = useGetPlaylistsQuery();
+  const {data: playlists, isLoading: isLoadingPlaylists} = useGetPlaylistsQuery();
   const {data: myAlbums, isLoading: isLoadingAlbums} = useGetAlbumsQuery();
   const [createPlaylist, {isError}] = useCreatePlaylistMutation();
 
@@ -39,6 +39,26 @@ const Container = (props) => {
     exact: true,
     strict: false,
   });
+
+  const [windowDimenion, detectHW] = useState({
+    winWidth: window.innerWidth,
+    winHeight: window.innerHeight,
+  })
+
+  const detectSize = () => {
+    detectHW({
+      winWidth: window.innerWidth,
+      winHeight: window.innerHeight,
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', detectSize)
+
+    return () => {
+      window.removeEventListener('resize', detectSize)
+    }
+  }, [windowDimenion])
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -58,8 +78,8 @@ const Container = (props) => {
 
 
   useEffect(() => {
-    if (playlists1) {
-      let playlistsWithSongs = playlists1.filter(
+    if (playlists) {
+      let playlistsWithSongs = playlists.filter(
         (playlist) => playlist.tracks.total !== 0
       );
 
@@ -69,7 +89,7 @@ const Container = (props) => {
         });
       }
     }
-  }, [playlists1]);
+  }, [playlists]);
 
   useEffect(() => {
     if (myAlbums) {
@@ -88,7 +108,7 @@ const Container = (props) => {
       }}
       hasSider={true}
     >
-      <Sider
+      {windowDimenion.winWidth > 768 && <Sider
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -160,7 +180,7 @@ const Container = (props) => {
             Saved Tracks
           </Menu.Item>
         </Menu>
-      </Sider>
+      </Sider>}
       <Layout className="site-layout">
         <Header>
           <MyHeader />

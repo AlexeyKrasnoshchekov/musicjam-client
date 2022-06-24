@@ -18,3 +18,9 @@
 .log-title {
     margin-right: 0.5rem;
 }
+
+@media (max-width: 768px) {
+    .username {
+        display: none !important;
+    }
+  }

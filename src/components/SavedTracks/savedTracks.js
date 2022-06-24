@@ -15,11 +15,31 @@ export default function SavedAlbums() {
 
   const handleDeleteTrack = async (id) => {
     await deleteTrack(id).unwrap();
-  }
+  };
 
   const { data, isLoading: isLoadingSavedTracks } = useGetSavedTracksQuery();
 
   console.log("savedTracks", data);
+
+  const [windowDimenion, detectHW] = useState({
+    winWidth: window.innerWidth,
+    winHeight: window.innerHeight,
+  })
+
+  const detectSize = () => {
+    detectHW({
+      winWidth: window.innerWidth,
+      winHeight: window.innerHeight,
+    })
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', detectSize)
+
+    return () => {
+      window.removeEventListener('resize', detectSize)
+    }
+  }, [windowDimenion])
 
   useEffect(() => {
     data &&
@@ -106,13 +126,76 @@ export default function SavedAlbums() {
       },
     },
   ];
+  const columnsMobile = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Artist",
+      dataIndex: "artist",
+      key: "artist",
+      render: (text) => <a>{text}</a>,
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: () => {
+            let elem = data.filter((item, i) => rowIndex === i)[0];
+            // handleGetAlbum(elem.album.id);
+            history.push(`/artist/${elem.track.artists[0].id}`);
+          }, // click row
+        };
+      },
+    },
+    {
+      title: "Album",
+      dataIndex: "album",
+      key: "album",
+      render: (text) => <a>{text}</a>,
+      onCell: (record, rowIndex) => {
+        return {
+          onClick: () => {
+            let elem = data.filter((item, i) => rowIndex === i)[0];
+            // handleGetAlbum(elem.album.id);
+            history.push(`/album/${elem.track.album.id}`);
+          }, // click row
+        };
+      },
+    },
+    {
+      title: "Del",
+      key: "del",
+      render: () => <DeleteOutlined />,
+      onCell: (record, rowIndex) => {
+        let elem = data.filter((item, i) => rowIndex === i)[0];
+        return {
+          onClick: () => {
+            handleDeleteTrack(elem.track.id);
+          }, // click row
+        };
+      },
+    },
+  ];
 
   return (
     <>
       {dataTable && (
-        <Table key={111222} columns={columns} dataSource={dataTable} />
+        <>
+          <Table
+            key={111222}
+            className="tracksDesktop"
+            columns={windowDimenion.winWidth > 768 ? columns : columnsMobile}
+            dataSource={dataTable}
+          />
+          {/* <Table
+            key={111333}
+            className="tracksMobile"
+            columns={columnsMobile}
+            dataSource={dataTable}
+          /> */}
+        </>
       )}
-       {/* <ul>
+      {/* <ul>
         {data && data.map(item => (
           <li key={item.track.name} onClick={() => handleDeleteTrack(item.track.id)}>
             {item.track.name}
