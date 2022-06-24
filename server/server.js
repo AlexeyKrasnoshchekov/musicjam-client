@@ -45,9 +45,7 @@ const scopes = [
 
 //AUTH
 app.get("/login", cors(corsOptions), (req, res) => {
-  // console.log("first");
   const url = spotifyApi.createAuthorizeURL(scopes);
-  console.log('url', url);
   if (url) {
     res.json(url);
   } else {
@@ -58,11 +56,8 @@ app.get("/login", cors(corsOptions), (req, res) => {
 app.get("/callback", cors(corsOptions), async (req, res) => {
   const error = req.query.error;
   const code = req.query.code;
-  // const state = req.query.state;
-  console.log("second", code);
 
   if (error) {
-    console.error("Callback Error:", error);
     res.send(`Callback Error: ${error}`);
     return;
   }
@@ -76,9 +71,6 @@ app.get("/callback", cors(corsOptions), async (req, res) => {
 
       spotifyApi.setAccessToken(access_token);
       spotifyApi.setRefreshToken(refresh_token);
-
-      console.log("access_token:", access_token);
-      console.log("refresh_token:", refresh_token);
 
       console.log(
         `Sucessfully retreived access token. Expires in ${expires_in} s.`
@@ -109,8 +101,7 @@ app.get("/callback", cors(corsOptions), async (req, res) => {
 
 app.get("/playlists", cors(corsOptions), async (req, res) => {
   const playlists = await spotifyApi.getUserPlaylists();
-  // const json = await playlists.json();
-  // console.log('playlists', playlists);
+
   if (playlists) {
     res.json(playlists.body.items);
   } else {
@@ -139,8 +130,6 @@ app.post("/playlists", cors(corsOptions), async (req, res) => {
       name: req.body.name,
     });
 
-    // console.log('newPlaylist', newPlaylist);
-
     newPlaylist && spotifyApi.addTracksToPlaylist(newPlaylist.body.id, [
       "spotify:track:2bfGNzdiRa1jXZRdfssSzR",
     ]);
@@ -148,20 +137,11 @@ app.post("/playlists", cors(corsOptions), async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  // const json = await playlists.json();
-  // console.log('playlists', playlists);
-  // if (playlists) {
-  //   res.json(playlists.body.items);
-  // } else {
-  //   res.status(404).send();
-  // }
+
 });
 
 app.delete("/playlist", cors(corsOptions), async (req, res) => {
 
-  // console.log('req.body.playlistId',req.body.playlistId);
-  // console.log('req.body.trackUri', req.body.trackUri);
-  // console.log('req.body', req.body);
 
   const playlistId = req.body.playlistId;
   const trackUri = req.body.trackUri;
@@ -177,8 +157,6 @@ app.delete("/playlist", cors(corsOptions), async (req, res) => {
 //ALBUMS
 app.get("/albums", cors(corsOptions), async (req, res) => {
   const albums = await spotifyApi.getMySavedAlbums();
-  // const json = await playlists.json();
-  // console.log("albums", albums);
   if (albums) {
     res.json(albums.body.items);
   } else {
@@ -188,8 +166,7 @@ app.get("/albums", cors(corsOptions), async (req, res) => {
 app.get("/album/:id", cors(corsOptions), async (req, res) => {
   const album_id = req.params.id;
   const album = await spotifyApi.getAlbum(album_id);
-  // const json = await playlists.json();
-  // console.log("album", album);
+
   if (album) {
     res.json(album.body);
   } else {
@@ -197,8 +174,6 @@ app.get("/album/:id", cors(corsOptions), async (req, res) => {
   }
 });
 app.post("/albums", cors(corsOptions), async (req, res) => {
-  // var playlistName = req.body.playlistName;
-  console.log('req.body.albumId',req.body.albumId);
   try {
     await spotifyApi.addToMySavedAlbums([req.body.albumId]);
   } catch (error) {
@@ -207,7 +182,7 @@ app.post("/albums", cors(corsOptions), async (req, res) => {
 });
 app.delete("/album/:id", cors(corsOptions), async (req, res) => {
   const album_id = req.params.id;
-  console.log('album_id',album_id);
+
   try {
     await spotifyApi.removeFromMySavedAlbums([album_id]);
   } catch (error) {
@@ -218,8 +193,6 @@ app.delete("/album/:id", cors(corsOptions), async (req, res) => {
 //SAVED_TRACKS
 app.get("/tracks", cors(corsOptions), async (req, res) => {
   const savedTracks = await spotifyApi.getMySavedTracks();
-  // const json = await playlists.json();
-  // console.log("savedTracks", savedTracks);
   if (savedTracks) {
     res.json(savedTracks.body.items);
   } else {
@@ -227,8 +200,7 @@ app.get("/tracks", cors(corsOptions), async (req, res) => {
   }
 });
 app.post("/track", cors(corsOptions), async (req, res) => {
-  // var playlistName = req.body.playlistName;
-  console.log('req.body.albumId',req.body.trackId);
+
   try {
     await spotifyApi.addToMySavedTracks([req.body.trackId]);
   } catch (error) {
@@ -236,12 +208,8 @@ app.post("/track", cors(corsOptions), async (req, res) => {
   }
 });
 app.delete("/track/:id", cors(corsOptions), async (req, res) => {
-
-
   const track_id = req.params.id;
 
-  // var playlistName = req.body.playlistName;
-  console.log('track_id',track_id);
   try {
     await spotifyApi.removeFromMySavedTracks([track_id]);
   } catch (error) {
@@ -251,8 +219,6 @@ app.delete("/track/:id", cors(corsOptions), async (req, res) => {
 //USER
 app.get("/user", cors(corsOptions), async (req, res) => {
   const user = await spotifyApi.getMe();
-  // const json = await playlists.json();
-  // console.log("user", savedTracks);
   if (user) {
     res.json(user.body);
   } else {
@@ -265,10 +231,7 @@ app.get("/search/:term", cors(corsOptions), async (req, res) => {
   const search_term = req.params.term;
   const types = ["artist", "album", "track"];
 
-  console.log("search_term", search_term);
   const searchResult = await spotifyApi.search(search_term, types, { limit: 5 });
-  // const json = await playlists.json();
-  // console.log("searchResult", searchResult);
   if (searchResult) {
     res.json(searchResult.body);
   } else {
@@ -291,10 +254,6 @@ app.get("/artist/:id", cors(corsOptions), async (req, res) => {
     artistAlbums : artistAlbums.body.items,
     relatedArtists : relatedArtists.body.artists
   }
-
-  console.log("jsonObj", jsonObj);
-  // const json = await playlists.json();
-  // console.log("searchResult", searchResult);
   if (jsonObj) {
     res.json(jsonObj);
   } else {
