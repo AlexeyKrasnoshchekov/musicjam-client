@@ -77,6 +77,7 @@ const Container = (props) => {
 
 
 
+
   useEffect(() => {
     if (playlists) {
       let playlistsWithSongs = playlists.filter(
@@ -162,7 +163,7 @@ const Container = (props) => {
             {mySavedAlbums1.map((item, index) => {
               const subKey = 1 + notEmptyPlaylists.length + index + 1;
               return (
-                <Menu.Item key={subKey}>
+                <Menu.Item key={subKey}> 
                   <Link to={`/album/${item.album.id}`}>
                     {`${item.album.name} (${item.album.artists[0].name})`}
                   </Link>

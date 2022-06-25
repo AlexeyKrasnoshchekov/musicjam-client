@@ -3,7 +3,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 export const playlistsApi = createApi({
     reducerPath: 'playlistsApi',
     tagTypes: ['Playlists'],
-    baseQuery: fetchBaseQuery({baseUrl:`http://localhost:8000`}),
+    baseQuery: fetchBaseQuery({baseUrl:`https://musicjamserver.herokuapp.com`}),
     endpoints: (build) => ({
         getPlaylists: build.query({
             query: () => 'playlists',

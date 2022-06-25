@@ -22,10 +22,11 @@ export default function App() {
   return (
     <Router>
       <Switch>
+
         <Route path={"/album/:id"}>
-          <Container>
+        <Container>
             <Album />
-          </Container>
+            </Container>
         </Route>
         <Route path={"/artist/:id"}>
           <Container>
@@ -56,6 +57,7 @@ export default function App() {
         <Route path={"/"}>
           <div className="App">{<Login/>}</div>
         </Route>
+        
       </Switch>
     </Router>
   );
