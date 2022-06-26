@@ -1,33 +1,31 @@
 import {
   MenuOutlined,
-  UnorderedListOutlined,
-  PlaySquareOutlined,
-  HeartOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Input, Menu, Modal } from "antd";
+import { Button, Drawer } from "antd";
 import SubMenu from "antd/lib/menu/SubMenu";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { useGetAlbumsQuery } from "../../redux/albumsQuery";
 import {
-  useCreatePlaylistMutation,
+  
   useGetPlaylistsQuery,
 } from "../../redux/playlistsQuery";
 import { useGetUserQuery } from "../../redux/userQuery";
+import MyMenu from "../Menu/Menu";
 
 const MyDrawer = () => {
   const [visible, setVisible] = useState(false);
   const [notEmptyPlaylists, setNotEmptyPlaylists] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [playlistName, setPlaylistName] = useState("");
+  
+  
 
   const { data: playlists, isLoading: isLoadingPlaylists } =
     useGetPlaylistsQuery();
   const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
   const { data: user, isLoading: isLoadingUser } = useGetUserQuery();
-  const [createPlaylist, { isError }] = useCreatePlaylistMutation();
+  
 
-  const history = useHistory();
+  
 
   useEffect(() => {
     if (playlists) {
@@ -69,18 +67,7 @@ const MyDrawer = () => {
     setVisible(false);
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = async () => {
-    setIsModalVisible(false);
-    await createPlaylist({ name: playlistName });
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
+  
 
   return (
     <>
@@ -96,76 +83,7 @@ const MyDrawer = () => {
             onClose={onClose}
             visible={visible}
           >
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["sub1"]}
-              style={{
-                height: "100%",
-              }}
-            >
-              <SubMenu
-                key="sub1"
-                title="Playlists"
-                icon={<UnorderedListOutlined />}
-              >
-                <>
-                  <Menu.Item key="1">
-                    <Button onClick={() => showModal()}>Create</Button>
-                  </Menu.Item>
-                  <Modal
-                    title="New playlist"
-                    visible={isModalVisible}
-                    onOk={handleOk}
-                    onCancel={handleCancel}
-                  >
-                    <Input
-                      maxLength={20}
-                      onChange={(e) => {
-                        setPlaylistName(e.target.value);
-                      }}
-                      placeholder="enter playlist name"
-                    />
-                  </Modal>
-                  {notEmptyPlaylists &&
-                    notEmptyPlaylists.map((playlist, index) => {
-                      const subKey = 1 + index + 1;
-                      return (
-                        <Menu.Item key={subKey}>
-                          <Link to={`/playlist/${playlist.id}`}>
-                            {playlist.name}
-                          </Link>
-                        </Menu.Item>
-                      );
-                    })}
-                </>
-              </SubMenu>
-              <SubMenu
-                key="sub2"
-                title="Saved Albums"
-                icon={<PlaySquareOutlined />}
-              >
-                {myAlbums &&
-                  myAlbums.map((item, index) => {
-                    const subKey = 1 + notEmptyPlaylists.length + index + 1;
-                    return (
-                      <Menu.Item key={subKey}>
-                        <Link to={`/album/${item.album.id}`}>
-                          {`${item.album.name} (${item.album.artists[0].name})`}
-                        </Link>
-                      </Menu.Item>
-                    );
-                  })}
-              </SubMenu>
-              <Menu.Item
-                key={1 + notEmptyPlaylists.length + myAlbums.length + 1}
-                icon={<HeartOutlined />}
-                onClick={() => {
-                  history.push(`/musicjam/savedtracks`);
-                }}
-              >
-                Saved Tracks
-              </Menu.Item>
-            </Menu>
+            {myAlbums && notEmptyPlaylists && <MyMenu myAlbums={myAlbums} notEmptyPlaylists={notEmptyPlaylists}/>}
           </Drawer>
         </div>
       )}

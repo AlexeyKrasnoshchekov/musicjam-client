@@ -41,7 +41,7 @@ function MyHeader() {
   // const types = ["artist", "album", "track"];
 
   const handleLogout = async () => {
-    history.push("/musicjam/");
+    history.push("/");
   };
 
   const mockVal = (str, repeat = 1) => ({
@@ -59,7 +59,7 @@ function MyHeader() {
   const onSelect = (data) => {
     // search(data);
     const term = data.replace(/ /g, "_")
-    history.push(`/musicjam/search/${term}`);
+    history.push(`/search/${term}`);
   };
 
   return (

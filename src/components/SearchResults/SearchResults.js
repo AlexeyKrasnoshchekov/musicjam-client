@@ -113,7 +113,7 @@ export default function SearchResults() {
           onClick: () => {
             let elem = searchResult.tracks.items.filter((item, i) => rowIndex === i)[0];
             // handleGetAlbum(elem.album.id);
-            history.push(`/musicjam/artist/${elem.artists[0].id}`);
+            history.push(`/artist/${elem.artists[0].id}`);
           }, // click row
         };
       },
@@ -130,7 +130,7 @@ export default function SearchResults() {
               (item, i) => rowIndex === i
             )[0];
             // handleGetAlbum(elem.album.id);
-            history.push(`/musicjam/album/${elem.album.id}`);
+            history.push(`/album/${elem.album.id}`);
           }, // click row
         };
       },
@@ -227,7 +227,7 @@ export default function SearchResults() {
           onClick: () => {
             let elem = searchResult.tracks.items.filter((item, i) => rowIndex === i)[0];
             // handleGetAlbum(elem.album.id);
-            history.push(`/musicjam/artist/${elem.artists[0].id}`);
+            history.push(`/artist/${elem.artists[0].id}`);
           }, // click row
         };
       },
@@ -244,7 +244,7 @@ export default function SearchResults() {
               (item, i) => rowIndex === i
             )[0];
             // handleGetAlbum(elem.album.id);
-            history.push(`/musicjam/album/${elem.album.id}`);
+            history.push(`/album/${elem.album.id}`);
           }, // click row
         };
       },

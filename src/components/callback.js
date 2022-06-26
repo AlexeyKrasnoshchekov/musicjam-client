@@ -14,19 +14,11 @@ export default function Callback() {
 
   // const isLoggedIn = useSelector(selectAuthStatus);
   const {data, isLoading: isLoadingSavedToken} = useGetTokenQuery(location.search);
-  console.log('data111', data);
-
-  // useEffect(() => {
-  //   if (initialRender.current) {
-  //     initialRender.current = false;
-  //     return;
-  //   }
-  //   setAuthStatus(true);
-  // }, []);
+  
 
   useEffect(() => {
     // setAuthStatus(true);
-    data && history.push("/musicjam/home");
+    data && history.push("/home");
   }, [data]);
 
   return <></>;

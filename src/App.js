@@ -1,7 +1,6 @@
 import "./App.css";
 import {
   BrowserRouter as Router,
-  HashRouter,
   Route,
   Switch,
 } from "react-router-dom";
@@ -24,35 +23,35 @@ export default function App() {
     <Router>
       <Switch>
 
-        <Route path={"/musicjam/album/:id"}>
+        <Route path={"/album/:id"}>
         <Container>
             <Album />
             </Container>
         </Route>
-        <Route path={"/musicjam/artist/:id"}>
+        <Route path={"/artist/:id"}>
           <Container>
             <ArtistPage />
           </Container>
         </Route>
-        <Route path={"/musicjam/playlist/:id"}>
+        <Route path={"/playlist/:id"}>
           <Container>
             <Playlist />
           </Container>
         </Route>
-        <Route path={"/musicjam/savedtracks"}>
+        <Route path={"/savedtracks"}>
           <Container>
             <SavedTracks />
           </Container>
         </Route>
-        <Route path={"/musicjam/search/:term"}>
+        <Route path={"/search/:term"}>
           <Container>
             <SearchResults />
           </Container>
         </Route>
-        <Route path={"/musicjam/callback"}>
+        <Route path={"/callback"}>
           <Callback />
         </Route>
-        <Route path={"/musicjam/home"}>
+        <Route path={"/home"}>
           <div className="App">{<Home/>}</div>
         </Route>
         <Route path={"/"}>
