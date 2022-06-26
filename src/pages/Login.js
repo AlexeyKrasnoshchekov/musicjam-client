@@ -23,14 +23,14 @@ export default function Login() {
     }
   };
 
-  useEffect(() => {
-    if (location.search) {
-      console.log('location.search', location.search);
-      history.push("/callback");
+  // useEffect(() => {
+  //   if (location.search) {
+  //     console.log('location.search', location.search);
+  //     history.push("/callback");
       
-    }
+  //   }
     
-  }, [location])
+  // }, [location])
 
 
 
