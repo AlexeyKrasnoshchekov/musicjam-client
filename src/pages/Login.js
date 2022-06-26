@@ -1,6 +1,6 @@
 // import { useContext, useEffect, useRef, useState } from "react";
 // import { context } from "../context/context";
-// import { useHistory, useLocation, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 // import { getAccessToken, setUrl } from "../util/helpers";
 import { Button, Col, Row, Divider, Image } from "antd";
 import { useGetUrlQuery } from "../redux/loginQuery";
@@ -11,10 +11,12 @@ export default function Login() {
 
   const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
   console.log('url', url);
+  const history = useHistory();
 
   const handleLogin = async () => {
     if (url) {
-      window.location = url;
+      // window.location = url;
+      history.push(`${url}`);
       
     }
   };
