@@ -1,6 +1,7 @@
 import "./App.css";
 import {
   BrowserRouter as Router,
+  HashRouter,
   Route,
   Switch,
 } from "react-router-dom";
@@ -20,7 +21,7 @@ export default function App() {
 
 
   return (
-    <Router>
+    <HashRouter>
       <Switch>
 
         <Route path={"/album/:id"}>
@@ -48,7 +49,7 @@ export default function App() {
             <SearchResults />
           </Container>
         </Route>
-        <Route exact path={"https://alexeykrasnoshchekov.github.io/musicjam/callback"}>
+        <Route path={"/callback"}>
           <Callback />
         </Route>
         <Route path={"/home"}>
@@ -59,6 +60,6 @@ export default function App() {
         </Route>
         
       </Switch>
-    </Router>
+    </HashRouter>
   );
 }
