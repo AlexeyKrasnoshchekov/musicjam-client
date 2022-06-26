@@ -1,6 +1,6 @@
 {
   "name": "client",
-  "homepage": "https://alexeykrasnoshchekov.github.io/",
+  "homepage": "https://alexeykrasnoshchekov.github.io/musicjam/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
