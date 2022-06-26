@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 
 export default function Login() {
-  const [urlSet, setUrlSet] = useState(false);
+  // const [urlSet, setUrlSet] = useState(false);
 
   const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
   console.log('url', url);
@@ -18,20 +18,20 @@ export default function Login() {
   const handleLogin = async () => {
     if (url) {
       window.location = url;
-      setUrlSet(true);
+      // setUrlSet(true);
       // history.push(`${url}`);
       
     }
   };
 
-  useEffect(() => {
-    if (location.search) {
-      console.log('location.search', location.search);
-      // history.push("/callback");
+  // useEffect(() => {
+  //   if (location.search) {
+  //     console.log('location.search', location.search);
+  //     // history.push("/callback");
       
-    }
+  //   }
     
-  }, [urlSet])
+  // }, [urlSet])
 
 
 

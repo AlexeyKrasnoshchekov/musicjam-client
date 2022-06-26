@@ -48,7 +48,7 @@ export default function App() {
             <SearchResults />
           </Container>
         </Route>
-        <Route path={"/callback"}>
+        <Route exact path={"https://alexeykrasnoshchekov.github.io/musicjam/callback"}>
           <Callback />
         </Route>
         <Route path={"/home"}>
