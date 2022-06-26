@@ -55,7 +55,7 @@ export default function App() {
         <Route path={"/musicjam/home"}>
           <div className="App">{<Home/>}</div>
         </Route>
-        <Route path={"/musicjam/"}>
+        <Route path={"/"}>
           <div className="App">{<Login/>}</div>
         </Route>
         
