@@ -14,7 +14,7 @@ export default function Callback() {
 
   // const isLoggedIn = useSelector(selectAuthStatus);
   const {data, isLoading: isLoadingSavedToken} = useGetTokenQuery(location.search);
-  
+  console.log('data111', data);
 
   // useEffect(() => {
   //   if (initialRender.current) {

@@ -10,7 +10,7 @@ export default function Login() {
 
 
   const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
-
+  console.log('url', url);
 
   const handleLogin = async () => {
     if (url) {
