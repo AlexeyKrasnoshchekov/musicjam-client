@@ -21,7 +21,7 @@ export default function App() {
 
 
   return (
-    <HashRouter>
+    <Router>
       <Switch>
 
         <Route path={"/musicjam/album/:id"}>
@@ -60,6 +60,6 @@ export default function App() {
         </Route>
         
       </Switch>
-    </HashRouter>
+    </Router>
   );
 }
