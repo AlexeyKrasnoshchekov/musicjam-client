@@ -4,11 +4,11 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 // import { getAccessToken, setUrl } from "../util/helpers";
 import { Button, Col, Row, Divider, Image } from "antd";
 import { useGetUrlQuery } from "../redux/loginQuery";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function Login() {
-
+  const [urlSet, setUrlSet] = useState(false);
 
   const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
   console.log('url', url);
@@ -18,19 +18,20 @@ export default function Login() {
   const handleLogin = async () => {
     if (url) {
       window.location = url;
+      setUrlSet(true);
       // history.push(`${url}`);
       
     }
   };
 
-  // useEffect(() => {
-  //   if (location.search) {
-  //     console.log('location.search', location.search);
-  //     history.push("/callback");
+  useEffect(() => {
+    if (location.search) {
+      console.log('location.search', location.search);
+      // history.push("/callback");
       
-  //   }
+    }
     
-  // }, [location])
+  }, [urlSet])
 
 
 
