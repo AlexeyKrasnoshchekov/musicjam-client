@@ -29,5 +29,5 @@ export default function Callback() {
     data && history.push("/home");
   }, [data]);
 
-  return <></>;
+  return <>111</>;
 }

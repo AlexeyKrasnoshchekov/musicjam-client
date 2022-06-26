@@ -17,8 +17,8 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (url) {
-      // window.location = url;
-      history.push(`${url}`);
+      window.location = url;
+      // history.push(`${url}`);
       
     }
   };
