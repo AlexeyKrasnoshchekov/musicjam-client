@@ -4,6 +4,7 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 // import { getAccessToken, setUrl } from "../util/helpers";
 import { Button, Col, Row, Divider, Image } from "antd";
 import { useGetUrlQuery } from "../redux/loginQuery";
+import { useEffect } from "react";
 
 
 export default function Login() {
@@ -12,6 +13,7 @@ export default function Login() {
   const {data: url, isLoading: isLoadingUrl} = useGetUrlQuery();
   console.log('url', url);
   const history = useHistory();
+  const location = useLocation();
 
   const handleLogin = async () => {
     if (url) {
@@ -20,6 +22,15 @@ export default function Login() {
       
     }
   };
+
+  useEffect(() => {
+    if (location.search) {
+      console.log('location.search', location.search);
+      history.push("/callback");
+      
+    }
+    
+  }, [location])
 
 
 
