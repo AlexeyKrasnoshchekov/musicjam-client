@@ -160,7 +160,7 @@ const MyDrawer = () => {
                 key={1 + notEmptyPlaylists.length + myAlbums.length + 1}
                 icon={<HeartOutlined />}
                 onClick={() => {
-                  history.push(`/savedtracks`);
+                  history.push(`/musicjam/savedtracks`);
                 }}
               >
                 Saved Tracks

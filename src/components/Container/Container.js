@@ -175,7 +175,7 @@ const Container = (props) => {
             key={1 + notEmptyPlaylists.length + mySavedAlbums1.length + 1}
             icon={<HeartOutlined />}
             onClick={() => {
-              history.push(`/savedtracks`);
+              history.push(`/musicjam/savedtracks`);
             }}
           >
             Saved Tracks

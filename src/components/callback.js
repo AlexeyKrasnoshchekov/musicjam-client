@@ -26,8 +26,8 @@ export default function Callback() {
 
   useEffect(() => {
     // setAuthStatus(true);
-    data && history.push("/home");
+    data && history.push("/musicjam/home");
   }, [data]);
 
-  return <>111</>;
+  return <></>;
 }

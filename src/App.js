@@ -24,38 +24,38 @@ export default function App() {
     <HashRouter>
       <Switch>
 
-        <Route path={"/album/:id"}>
+        <Route path={"/musicjam/album/:id"}>
         <Container>
             <Album />
             </Container>
         </Route>
-        <Route path={"/artist/:id"}>
+        <Route path={"/musicjam/artist/:id"}>
           <Container>
             <ArtistPage />
           </Container>
         </Route>
-        <Route path={"/playlist/:id"}>
+        <Route path={"/musicjam/playlist/:id"}>
           <Container>
             <Playlist />
           </Container>
         </Route>
-        <Route path={"/savedtracks"}>
+        <Route path={"/musicjam/savedtracks"}>
           <Container>
             <SavedTracks />
           </Container>
         </Route>
-        <Route path={"/search/:term"}>
+        <Route path={"/musicjam/search/:term"}>
           <Container>
             <SearchResults />
           </Container>
         </Route>
-        <Route path={"/callback"}>
+        <Route path={"/musicjam/callback"}>
           <Callback />
         </Route>
-        <Route path={"/home"}>
+        <Route path={"/musicjam/home"}>
           <div className="App">{<Home/>}</div>
         </Route>
-        <Route path={"/"}>
+        <Route path={"/musicjam/"}>
           <div className="App">{<Login/>}</div>
         </Route>
         
