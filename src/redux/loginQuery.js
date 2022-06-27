@@ -2,7 +2,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 
 export const loginApi = createApi({
     reducerPath: 'loginApi',
-    baseQuery: fetchBaseQuery({baseUrl:`https://musicjamserver.herokuapp.com`}),
+    baseQuery: fetchBaseQuery({baseUrl:`http://localhost:8000`}),
     endpoints: (build) => ({
         getUrl: build.query({
             query: () => `login`

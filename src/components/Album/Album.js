@@ -54,25 +54,10 @@ export default function Album() {
     };
   }, [windowDimenion]);
 
-  // const {
-  //   token,
-  //   refreshPage,
-  //   album,
-  //   getAlbum,
-
-  //   clearSavedAlbums,
-  //   getMySavedAlbums,
-  //   removeFromMySavedAlbums,
-  //   playlists,
-  //   clearSavedTracks,
-  //   getMySavedTracks,
-  //   mySavedAlbums,
-  // } = useContext(context);
-
   const { id } = useParams();
 
   const { data: album, isLoading: isLoadingAlbum } = useGetAlbumQuery(id);
-  const { data: playlists1, isLoading: isLoadingPlaylists } =
+  const { data: playlists, isLoading: isLoadingPlaylists } =
     useGetPlaylistsQuery();
   const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
   const [addToPlaylist, { isError: addPlaylistError }] =
@@ -80,26 +65,6 @@ export default function Album() {
   const [saveAlbum, { isError: saveAlbumError }] = useSaveAlbumMutation();
   const [saveTrack, { isError: saveTrackError }] = useSaveTrackMutation();
   const [deleteAlbum] = useDeleteAlbumMutation();
-
-  // const handleGetAlbum = async (id) => {
-  //   await getAlbum(id);
-  // };
-
-  // useEffect(() => {
-  //   if (initialRender.current) {
-  //     initialRender.current = false;
-  //     return;
-  //   }
-  //   token === "" && refreshPage();
-  // }, [token]);
-
-  // useEffect(() => {
-  //   if (initialRender.current) {
-  //     initialRender.current = false;
-  //     return;
-  //   }
-  //   handleGetAlbum(id);
-  // }, [id]);
 
   useEffect(() => {
     if (album) {
@@ -142,9 +107,9 @@ export default function Album() {
         <Dropdown
           overlay={
             <Menu>
-              {playlists1 &&
-                playlists1.length !== 0 &&
-                playlists1
+              {playlists &&
+                playlists.length !== 0 &&
+                playlists
                   .filter((playlist) => playlist.tracks.total !== 0)
                   .map((playlist, index) => {
                     return (
@@ -190,25 +155,19 @@ export default function Album() {
 
   const handleAddToMyAlbums = async () => {
     await saveAlbum({ albumId: album.id });
-    // await clearSavedAlbums();
-    // await getMySavedAlbums();
     setAlbumIsSaved((state) => !state);
   };
   const handleDeleteFromMyAlbums = async () => {
     await deleteAlbum(album.id);
-    // await clearSavedAlbums();
-    // await getMySavedAlbums();
     setAlbumIsSaved((state) => !state);
   };
   const handleAddTrack = async (trackId) => {
     await saveTrack({ trackId });
-    // await clearSavedTracks();
-    // await getMySavedTracks();
   };
 
   const handleAddToPlaylist = async (playlistId, trackUri) => {
     await addToPlaylist({ playlistId: playlistId, uri: trackUri });
-
+    console.log("trackUri", trackUri);
     if (!addPlaylistError) {
       notification.open({
         message: "Track was added to playlist",
@@ -277,8 +236,8 @@ export default function Album() {
                   />
                 </Col>
               </Row>
-              <Row justify="center" style={{width: '100%'}}>
-                <Col style={{padding: '1rem 0', textAlign: 'center'}}>
+              <Row justify="center" style={{ width: "100%" }}>
+                <Col style={{ padding: "1rem 0", textAlign: "center" }}>
                   <Title
                     level={2}
                   >{`${album.tracks.items[0].artists[0].name} - ${album.name}`}</Title>

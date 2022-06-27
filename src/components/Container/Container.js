@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 import MyHeader from "../Header/Header";
-import { matchPath, useLocation, useRouteMatch, useHistory } from "react-router-dom";
-import { useGetPlaylistsQuery } from '../../redux/playlistsQuery';
+import {
+  matchPath,
+  useLocation,
+  useRouteMatch,
+} from "react-router-dom";
+import { useGetPlaylistsQuery } from "../../redux/playlistsQuery";
 
-import { Layout} from "antd";
+import { Layout } from "antd";
 import "./container.css";
 
 import { useGetAlbumsQuery } from "../../redux/albumsQuery";
@@ -14,12 +18,11 @@ const { Header, Content, Sider } = Layout;
 const Container = (props) => {
   const [collapsed, setCollapsed] = useState(false);
   const [notEmptyPlaylists, setNotEmptyPlaylists] = useState([]);
-  const [mySavedAlbums1, setMySavedAlbums1] = useState([]);
 
   const location = useLocation();
-  const {data: playlists, isLoading: isLoadingPlaylists} = useGetPlaylistsQuery();
-  const {data: myAlbums, isLoading: isLoadingAlbums} = useGetAlbumsQuery();
-
+  const { data: playlists, isLoading: isLoadingPlaylists } =
+    useGetPlaylistsQuery();
+  const { data: myAlbums, isLoading: isLoadingAlbums } = useGetAlbumsQuery();
 
   const { path } = useRouteMatch();
   const isHome = matchPath(path, {
@@ -31,25 +34,22 @@ const Container = (props) => {
   const [windowDimenion, detectHW] = useState({
     winWidth: window.innerWidth,
     winHeight: window.innerHeight,
-  })
+  });
 
   const detectSize = () => {
     detectHW({
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    window.addEventListener('resize', detectSize)
+    window.addEventListener("resize", detectSize);
 
     return () => {
-      window.removeEventListener('resize', detectSize)
-    }
-  }, [windowDimenion])
-
-
-
+      window.removeEventListener("resize", detectSize);
+    };
+  }, [windowDimenion]);
 
   useEffect(() => {
     if (playlists) {
@@ -61,21 +61,11 @@ const Container = (props) => {
 
       if (playlistsWithSongs.length !== 0) {
         playlistsWithSongs.forEach((item) => {
-          setNotEmptyPlaylists(state => [...state, item])
+          setNotEmptyPlaylists((state) => [...state, item]);
         });
       }
     }
   }, [playlists]);
-
-  useEffect(() => {
-    if (myAlbums) {
-      if (myAlbums.length !== 0) {
-        myAlbums.forEach((item) => {
-          setMySavedAlbums1(state => [...state, item])
-        });
-      }
-    }
-  }, [myAlbums]);
 
   return (
     <Layout
@@ -84,14 +74,18 @@ const Container = (props) => {
       }}
       hasSider={true}
     >
-      {windowDimenion.winWidth > 768 && <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-        width={"20%"}
-      >
-        {myAlbums && notEmptyPlaylists && <MyMenu myAlbums={myAlbums} notEmptyPlaylists={notEmptyPlaylists}/>}
-      </Sider>}
+      {windowDimenion.winWidth > 768 && (
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          width={"20%"}
+        >
+          {myAlbums && notEmptyPlaylists && (
+            <MyMenu myAlbums={myAlbums} notEmptyPlaylists={notEmptyPlaylists} />
+          )}
+        </Sider>
+      )}
       <Layout className="site-layout">
         <Header>
           <MyHeader />
@@ -101,7 +95,7 @@ const Container = (props) => {
           className={isHome && "home"}
           style={{
             padding: 20,
-            overflowY: 'scroll'
+            overflowY: "scroll",
           }}
         >
           <TransitionGroup>

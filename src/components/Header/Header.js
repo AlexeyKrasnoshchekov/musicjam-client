@@ -16,29 +16,24 @@ function MyHeader() {
   const [windowDimenion, detectHW] = useState({
     winWidth: window.innerWidth,
     winHeight: window.innerHeight,
-  })
+  });
 
   const detectSize = () => {
     detectHW({
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    window.addEventListener('resize', detectSize)
+    window.addEventListener("resize", detectSize);
 
     return () => {
-      window.removeEventListener('resize', detectSize)
-    }
-  }, [windowDimenion])
-
-  
+      window.removeEventListener("resize", detectSize);
+    };
+  }, [windowDimenion]);
 
   const { data: user, isLoading: isLoadingUser } = useGetUserQuery();
-
-
-  // const types = ["artist", "album", "track"];
 
   const handleLogout = async () => {
     history.push("/");
@@ -57,8 +52,7 @@ function MyHeader() {
   };
 
   const onSelect = (data) => {
-    // search(data);
-    const term = data.replace(/ /g, "_")
+    const term = data.replace(/ /g, "_");
     history.push(`/search/${term}`);
   };
 
@@ -89,13 +83,15 @@ function MyHeader() {
               {/* <div>App</div> */}
               <Row align="middle" justify="end">
                 <Space size="middle">
-                  {windowDimenion.winWidth > 768 && <Title
-                    style={{
-                      color: "white",
-                      marginTop: "0.5em",
-                    }}
-                    level={5}
-                  >{`Logged in as ${user && user.display_name}`}</Title>}
+                  {windowDimenion.winWidth > 768 && (
+                    <Title
+                      style={{
+                        color: "white",
+                        marginTop: "0.5em",
+                      }}
+                      level={5}
+                    >{`Logged in as ${user && user.display_name}`}</Title>
+                  )}
                   {windowDimenion.winWidth < 768 && <MyDrawer />}
                   <LogoutOutlined
                     style={{
@@ -104,7 +100,6 @@ function MyHeader() {
                     onClick={handleLogout}
                   />
                 </Space>
-                
               </Row>
             </Col>
           </Row>

@@ -139,7 +139,7 @@ export default function Playlist() {
         return {
           onClick: () => {
             let elem = data.filter((item, i) => rowIndex === i)[0];
-            // deleteFromPlaylist({playlistId: playlist.id, trackUri: elem.uri});
+            // deleteFromPlaylist({playlistId: playlist.id, uri: elem.uri});
             // removeFromPlaylist(playlist.id, elem.uri);
           },
         };
@@ -202,7 +202,7 @@ export default function Playlist() {
         return {
           onClick: () => {
             let elem = data.filter((item, i) => rowIndex === i)[0];
-            // deleteFromPlaylist({playlistId: playlist.id, trackUri: elem.uri});
+            // deleteFromPlaylist({playlistId: playlist.id, uri: elem.uri});
             // removeFromPlaylist(playlist.id, elem.uri);
           },
         };
@@ -223,20 +223,10 @@ export default function Playlist() {
         <>
           {windowDimenion.winWidth > 576 && (
             <Row gutter={50}>
-              <Col
-              
-                lg={{ span: 8 }}
-                md={{ span: 12 }}
-                sm={{ span: 12 }}
-              >
+              <Col lg={{ span: 8 }} md={{ span: 12 }} sm={{ span: 12 }}>
                 <Image width="100&" src={playlist.images[imageIndex].url} />
               </Col>
-              <Col
-              
-                lg={{ span: 16 }}
-                md={{ span: 12 }}
-                sm={{ span: 12 }}
-              >
+              <Col lg={{ span: 16 }} md={{ span: 12 }} sm={{ span: 12 }}>
                 <Title level={2}>{playlist.name}</Title>
               </Col>
             </Row>
@@ -245,11 +235,15 @@ export default function Playlist() {
             <Row gutter={50}>
               <Row>
                 <Col xs={{ span: 24 }}>
-                  <Image preview={false} width="100&" src={playlist.images[imageIndex].url} />
+                  <Image
+                    preview={false}
+                    width="100&"
+                    src={playlist.images[imageIndex].url}
+                  />
                 </Col>
               </Row>
-              <Row justify="center" style={{width: '100%'}}>
-                <Col style={{ padding: '1rem 0'  }} >
+              <Row justify="center" style={{ width: "100%" }}>
+                <Col style={{ padding: "1rem 0" }}>
                   <Title level={2}>{playlist.name}</Title>
                 </Col>
               </Row>

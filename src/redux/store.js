@@ -8,16 +8,6 @@ import { savedTracksApi } from "./savedTracksQuery";
 import { searchApi } from "./searchQuery";
 import { userApi } from "./userQuery";
 
-// const rootReducer = combineReducers({
-//   [playlistsApi.reducerPath]: playlistsApi.reducer,
-//   [albumsApi.reducerPath]: albumsApi.reducer,
-//   [savedTracksApi.reducerPath]: savedTracksApi.reducer,
-//   [searchApi.reducerPath]: searchApi.reducer,
-//   [artistApi.reducerPath]: artistApi.reducer,
-//   [userApi.reducerPath]: userApi.reducer,
-//   [loginApi.reducerPath]: loginApi.reducer,
-// });
-
 export const store = configureStore({
   reducer: {
     [playlistsApi.reducerPath]: playlistsApi.reducer,

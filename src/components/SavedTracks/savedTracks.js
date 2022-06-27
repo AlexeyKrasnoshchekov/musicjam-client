@@ -24,22 +24,22 @@ export default function SavedAlbums() {
   const [windowDimenion, detectHW] = useState({
     winWidth: window.innerWidth,
     winHeight: window.innerHeight,
-  })
+  });
 
   const detectSize = () => {
     detectHW({
       winWidth: window.innerWidth,
       winHeight: window.innerHeight,
-    })
-  }
+    });
+  };
 
   useEffect(() => {
-    window.addEventListener('resize', detectSize)
+    window.addEventListener("resize", detectSize);
 
     return () => {
-      window.removeEventListener('resize', detectSize)
-    }
-  }, [windowDimenion])
+      window.removeEventListener("resize", detectSize);
+    };
+  }, [windowDimenion]);
 
   useEffect(() => {
     data &&
@@ -187,21 +187,8 @@ export default function SavedAlbums() {
             columns={windowDimenion.winWidth > 768 ? columns : columnsMobile}
             dataSource={dataTable}
           />
-          {/* <Table
-            key={111333}
-            className="tracksMobile"
-            columns={columnsMobile}
-            dataSource={dataTable}
-          /> */}
         </>
       )}
-      {/* <ul>
-        {data && data.map(item => (
-          <li key={item.track.name} onClick={() => handleDeleteTrack(item.track.id)}>
-            {item.track.name}
-          </li>
-        ))}
-      </ul> */}
     </>
   );
 }

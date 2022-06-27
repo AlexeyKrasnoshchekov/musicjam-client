@@ -44,7 +44,6 @@ export default function SearchResults() {
     useAddToPlaylistMutation();
   const [saveAlbum, { isError: saveAlbumError }] = useSaveAlbumMutation();
   const [saveTrack, { isError: saveTrackError }] = useSaveTrackMutation();
-  // console.log('searchResult', searchResult);
 
   const [windowDimenion, detectHW] = useState({
     winWidth: window.innerWidth,
@@ -93,8 +92,6 @@ export default function SearchResults() {
 
   const handleAddToMyAlbums = async (albumId) => {
     await saveAlbum({ albumId });
-    // await clearSavedAlbums();
-    // await getMySavedAlbums();
   };
 
   const columns = [
@@ -111,7 +108,9 @@ export default function SearchResults() {
       onCell: (record, rowIndex) => {
         return {
           onClick: () => {
-            let elem = searchResult.tracks.items.filter((item, i) => rowIndex === i)[0];
+            let elem = searchResult.tracks.items.filter(
+              (item, i) => rowIndex === i
+            )[0];
             // handleGetAlbum(elem.album.id);
             history.push(`/artist/${elem.artists[0].id}`);
           }, // click row
@@ -164,7 +163,6 @@ export default function SearchResults() {
         ) : (
           <></>
         );
-        // mySavedTracks.filter(item => item.track.id === elem.id).length === 0 ? <span></span> : <HeartOutlined />;
       },
       onCell: (record, rowIndex) => {
         return {
@@ -225,8 +223,9 @@ export default function SearchResults() {
       onCell: (record, rowIndex) => {
         return {
           onClick: () => {
-            let elem = searchResult.tracks.items.filter((item, i) => rowIndex === i)[0];
-            // handleGetAlbum(elem.album.id);
+            let elem = searchResult.tracks.items.filter(
+              (item, i) => rowIndex === i
+            )[0];
             history.push(`/artist/${elem.artists[0].id}`);
           }, // click row
         };
@@ -243,7 +242,6 @@ export default function SearchResults() {
             let elem = searchResult.tracks.items.filter(
               (item, i) => rowIndex === i
             )[0];
-            // handleGetAlbum(elem.album.id);
             history.push(`/album/${elem.album.id}`);
           }, // click row
         };
@@ -262,7 +260,6 @@ export default function SearchResults() {
         ) : (
           <></>
         );
-        // mySavedTracks.filter(item => item.track.id === elem.id).length === 0 ? <span></span> : <HeartOutlined />;
       },
       onCell: (record, rowIndex) => {
         return {
@@ -303,7 +300,6 @@ export default function SearchResults() {
         >
           <Space>
             <PlusSquareOutlined />
-            {/* <DownOutlined /> */}
           </Space>
         </Dropdown>
       ),
@@ -312,9 +308,6 @@ export default function SearchResults() {
 
   const handleAddTrack = async (trackId) => {
     await saveTrack({ trackId });
-    // await clearSavedTracks();
-    // await getMySavedTracks();
-    // formatData();
   };
 
   const handleAddToPlaylist = async (playlistId, trackUri) => {
@@ -338,10 +331,8 @@ export default function SearchResults() {
       {searchResult && (
         <div>
           {searchResult.albums && (
-            <div style={{textAlign: 'center'}}>
+            <div style={{ textAlign: "center" }}>
               <Title level={4}>Albums</Title>
-              {/* <Row>
-                <Col span={24}> */}
               <div className="albums-grid">
                 {searchResult.albums.items.length !== 0 &&
                   searchResult.albums.items.map((album, index) => {
@@ -386,12 +377,10 @@ export default function SearchResults() {
                     );
                   })}
               </div>
-              {/* </Col>
-              </Row> */}
             </div>
           )}
           {searchResult.artists.items.length !== 0 && (
-            <div style={{textAlign: 'center'}}>
+            <div style={{ textAlign: "center" }}>
               <Title level={4}>Artists</Title>
               <div className="artists-grid">
                 {searchResult.artists.items &&
@@ -427,11 +416,17 @@ export default function SearchResults() {
               </div>
             </div>
           )}
-          <div style={{textAlign: 'center'}}>
+          <div style={{ textAlign: "center" }}>
             <Title level={4}>Tracks</Title>
             <div>
               {data && (
-                <Table pagination={false} columns={windowDimenion.winWidth > 768 ? columns : columnsMobile} dataSource={data} />
+                <Table
+                  pagination={false}
+                  columns={
+                    windowDimenion.winWidth > 768 ? columns : columnsMobile
+                  }
+                  dataSource={data}
+                />
               )}
             </div>
           </div>
