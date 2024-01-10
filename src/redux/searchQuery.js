@@ -6,11 +6,7 @@ export const searchApi = createApi({
     baseQuery: fetchBaseQuery({baseUrl:`https://musicjam-server.vercel.app`}),
     endpoints: (build) => ({
         getSearch: build.query({
-            query: (term) => ({
-                url: `search/${term}`,
-                mode: 'no-cors'
-            })
-            
+            query: (term) => `search/${term}`
         })
     })
 });
