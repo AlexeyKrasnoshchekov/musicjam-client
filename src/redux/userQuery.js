@@ -6,7 +6,10 @@ export const userApi = createApi({
     baseQuery: fetchBaseQuery({baseUrl:`https://musicjam-server.vercel.app`}),
     endpoints: (build) => ({
         getUser: build.query({
-            query: () => `user`
+            query: () => ({
+                url: `user`,
+                mode: 'no-cors'
+            })
         })
     })
 });

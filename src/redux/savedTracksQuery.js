@@ -1,35 +1,38 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const savedTracksApi = createApi({
-  reducerPath: "savedTracksApi",
-  tagTypes: ["savedTracks"],
+  reducerPath: 'savedTracksApi',
+  tagTypes: ['savedTracks'],
   // baseQuery: fetchBaseQuery({ baseUrl: `http://localhost:8000` }),
   baseQuery: fetchBaseQuery({ baseUrl: `https://musicjam-server.vercel.app` }),
   endpoints: (build) => ({
     getSavedTracks: build.query({
-      query: () => "tracks",
+      query: () => ({
+        url: 'tracks',
+        mode: 'no-cors',
+      }),
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: "savedTracks", id })),
-              { type: "savedTracks", id: "LIST" },
+              ...result.map(({ id }) => ({ type: 'savedTracks', id })),
+              { type: 'savedTracks', id: 'LIST' },
             ]
-          : [{ type: "savedTracks", id: "LIST" }],
+          : [{ type: 'savedTracks', id: 'LIST' }],
     }),
     saveTrack: build.mutation({
       query: (body) => ({
-        url: "track",
-        method: "POST",
+        url: 'track',
+        method: 'POST',
         body,
       }),
-      invalidatesTags: [{ type: "savedTracks", id: "LIST" }],
+      invalidatesTags: [{ type: 'savedTracks', id: 'LIST' }],
     }),
     deleteSavedTrack: build.mutation({
       query: (trackId) => ({
         url: `track/${trackId}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: [{ type: "savedTracks", id: "LIST" }],
+      invalidatesTags: [{ type: 'savedTracks', id: 'LIST' }],
     }),
   }),
 });
