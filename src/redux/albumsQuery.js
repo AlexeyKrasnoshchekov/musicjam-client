@@ -3,7 +3,7 @@ import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
 export const albumsApi = createApi({
     reducerPath: 'albumsApi',
     // baseQuery: fetchBaseQuery({baseUrl:`http://localhost:8000`}),
-    baseQuery: fetchBaseQuery({baseUrl:`https://musicjam-server.vercel.app`}),
+    baseQuery: fetchBaseQuery({baseUrl:`https://musicjam-server.vercel.app/`}),
     endpoints: (build) => ({
         getAlbums: build.query({
             query: () => 'albums'
